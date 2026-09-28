@@ -1,0 +1,31 @@
+# CodeRabbit Configuration for Quorum
+# Microsoft Innovate 2026
+
+language: "en-US"
+tone_instructions: "Strict security engineering review. Flag any raw credentials, exposed secrets, unvalidated client inputs, or vibecoding clichés."
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches: ["main", "develop"]
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  learnings:
+    enabled: true
+
+path_instructions:
+  - path: "src/detect/**"
+    instructions: "Ensure pure TypeScript functions with zero external dependencies and deterministic arithmetic."
+  - path: "src/lib/crypto/**"
+    instructions: "Verify SHA-256 hash chaining integrity and tamper-evidence guarantees."
+  - path: "src/normalize/**"
+    instructions: "Verify credentials and passwords are never persisted and timestamps are strictly normalized."
