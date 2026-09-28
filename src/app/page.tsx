@@ -252,7 +252,7 @@ export default function AnalystCockpitPage() {
             </div>
           </div>
           <p className="text-xs text-slate-400">
-            Every pipeline run and analyst modification is sealed in a continuous cryptographic hash chain where each block commits to the prior block's SHA-256 digest. Postgres triggers enforce immutability.
+            Every pipeline run and analyst modification is sealed in a continuous cryptographic hash chain where each block commits to the prior block&apos;s SHA-256 digest. Postgres triggers enforce immutability.
           </p>
         </section>
       </div>
