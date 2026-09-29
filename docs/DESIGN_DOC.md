@@ -386,6 +386,7 @@ Every `[↗]` chip links to the exact `event_hash` DB row.
 | **Animate UI** | https://animate-ui.com | Number counters, step indicators |
 | **Lenis** | https://github.com/darkroomengineering/lenis | Smooth scroll |
 | **Skipper UI** | https://skipperui.com | Navigation, command structures |
+| **UI Watermelon** | https://uiwatermelon.com | Technical minimalist cards & telemetry tables |
 | **Spline** | https://spline.design | 3D ambient hero element |
 
 ---

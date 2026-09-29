@@ -1,7 +1,7 @@
 // AI Provider & Task Routing Types for Quorum
 // All AI calls are strictly server-side. Never expose API keys to the browser.
 
-export type AiProvider = 'gemini' | 'claude' | 'openai';
+export type AiProvider = 'gemini' | 'claude' | 'openai' | 'hermes' | 'ollama' | 'freellm';
 
 export type AiTaskCategory =
   | 'INCIDENT_NARRATIVE'     // Describe a correlated incident in analyst language
@@ -17,7 +17,7 @@ export interface AiRequest {
 }
 
 export interface AiResponse {
-  readonly provider: AiProvider;
+  readonly provider: AiProvider | 'deterministic-fallback';
   readonly model: string;
   readonly content: string;
   readonly inputTokens: number;
@@ -35,23 +35,26 @@ export interface ProviderHealth {
 
 // Task-to-provider routing table (order = priority)
 export const TASK_ROUTING_TABLE: Record<AiTaskCategory, AiProvider[]> = {
-  // High-reasoning: route to Claude Sonnet first, Gemini Flash as fallback
-  INCIDENT_NARRATIVE: ['claude', 'gemini', 'openai'],
-  TRIAGE_SUGGESTION: ['claude', 'gemini', 'openai'],
+  // High-reasoning: route to Claude Sonnet first, Hermes / Gemini as fallback
+  INCIDENT_NARRATIVE: ['claude', 'gemini', 'hermes', 'openai', 'ollama'],
+  TRIAGE_SUGGESTION: ['claude', 'gemini', 'hermes', 'openai', 'ollama'],
 
-  // Low-latency bulk: Gemini Flash first, Claude as fallback
-  CAMPAIGN_SUMMARY: ['gemini', 'claude', 'openai'],
-  SUPPRESSION_REASON: ['gemini', 'claude', 'openai'],
+  // Low-latency bulk & Token Preservation: Gemini Flash first, FreeLLM / Ollama fallback
+  CAMPAIGN_SUMMARY: ['gemini', 'freellm', 'claude', 'ollama', 'openai'],
+  SUPPRESSION_REASON: ['gemini', 'freellm', 'claude', 'ollama', 'openai'],
 
-  // Translation tasks: OpenAI o1-mini excels, Gemini Pro fallback
-  KQL_TRANSLATION: ['openai', 'gemini', 'claude'],
+  // Translation tasks: OpenAI / Claude / Gemini / Ollama
+  KQL_TRANSLATION: ['openai', 'claude', 'gemini', 'freellm', 'ollama'],
 };
 
 // Model selection per provider
 export const PROVIDER_MODELS: Record<AiProvider, string> = {
   gemini: 'gemini-2.0-flash',
-  claude: 'claude-sonnet-4-5',
+  claude: 'claude-3-5-sonnet-20241022',
   openai: 'gpt-4o-mini',
+  hermes: 'hermes-3-llama-3.1-8b',
+  ollama: 'qwen2.5-coder:7b',
+  freellm: 'deepseek-v3',
 };
 
 // Token budget per task category (output tokens)

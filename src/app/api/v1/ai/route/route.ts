@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { routeAiRequest, getProviderHealthStatus } from '@/lib/ai/router';
 import { AiTaskCategory } from '@/types/ai-router';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 const AiTaskSchema = z.object({
   taskCategory: z.enum([
@@ -17,6 +18,21 @@ const AiTaskSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
+    const rateLimit = checkRateLimit(`ai:${clientIp}`, { maxTokens: 30, refillRatePerSec: 0.5 });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Too many requests. Please retry after delay.',
+            retryAfter: rateLimit.retryAfterSec,
+          },
+        },
+        { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSec || 2) } }
+      );
+    }
     const body = await request.json().catch(() => null);
     if (!body) {
       return NextResponse.json(

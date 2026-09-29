@@ -35,7 +35,7 @@ When evaluated against the exact same 3-day telemetry corpus:
 - Node.js >= 20 LTS
 - npm or pnpm
 
-### Installation
+### Installation & Reticle Verification
 ```bash
 # Install dependencies
 npm install
@@ -45,6 +45,9 @@ npm run typecheck
 
 # Run detection plane test suite
 npm test
+
+# Run complete Reticle verification loop (typecheck + tests)
+npm run reticle
 ```
 
 ### Offline Demo Mode
@@ -60,21 +63,28 @@ NEXT_PUBLIC_DEMO_CORPUS_PACK=B
 
 ```text
 ├── docs/                     # Comprehensive architecture & design docs
+│   ├── HACKATHON_FRAMEWORK.md# 45s stage script, judge FAQ defense, 5-minute pitch
+│   ├── GRAPHIFY_CONTEXT.md   # Structural knowledge graph for multi-AI handoff
+│   ├── AI_COLLABORATION_GUIDE.md # Freebuff, OpenCode, Manus, Claude, Ollama delegation
+│   ├── PRE_LAUNCH_CHECKLIST.md # 15 technical guardrails + 20 "Don't get sued" checks
+│   ├── ANTI_VIBECODE_AUDIT.md# 30 anti-vibecode rules + Floto roast defense
 │   ├── PRD_REVIEW.md         # PRD v4 evaluation & improvement plan
-│   ├── DESIGN_DOC.md         # Cockpit UI/UX & component mapping
-│   ├── TECH_STACK.md         # Complete technology decisions
-│   ├── SECURITY.md           # Zero-trust model & pre-launch checklist
+│   ├── DESIGN_DOC.md         # Cockpit UI/UX (21st.dev, OriginKit, Skipper UI)
+│   ├── TECH_STACK.md         # Tech stack research + Single-Task Roadmap
+│   ├── SECURITY.md           # Zero-trust model & cryptographic audit chain
 │   ├── DATABASE.md           # PostgreSQL schema & transactional RPCs
 │   ├── CODE_STYLE.md         # Strict TypeScript guidelines
-│   └── API_GUIDE.md          # Next.js Route Handlers & schemas
+│   └── API_GUIDE.md          # Next.js Route Handlers & Zod schemas
 ├── src/
 │   ├── types/                # Canonical TypeScript definitions (AuthEvent, etc.)
 │   ├── normalize/            # F1 Ingest & F2 Canonical Normalizer
 │   ├── detect/               # Pure TypeScript Detection Plane (F5, F6, F7, F10, F13)
 │   ├── data/                 # F4 Deterministic Synthetic Generator (Pack A & B)
 │   └── lib/
+│       ├── ai/               # Multi-model AI router with circuit breaker & fallback
 │       ├── crypto/           # F21 Cryptographic SHA-256 hash-chain ledger
-│       └── export/           # F25 Sentinel JSON & STIX 2.1 exporters
+│       ├── export/           # F25 Sentinel JSON & STIX 2.1 exporters
+│       └── rate-limiter.ts   # Server-side token-bucket rate limiter
 └── tests/                    # Vitest unit test suite (100% green)
 ```
 

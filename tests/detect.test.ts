@@ -36,9 +36,9 @@ describe('Quorum Detection Plane', () => {
     expect(campaign.detectorId).toBe('F7_campaign');
     expect(campaign.confidenceScore).toBeGreaterThanOrEqual(80);
 
-    const bundle = campaign.evidenceBundle as any;
-    expect(bundle.ipCount).toBeGreaterThanOrEqual(5);
-    expect(bundle.accountCount).toBeGreaterThanOrEqual(15);
+    const bundle = campaign.evidenceBundle as Record<string, unknown>;
+    expect(Number(bundle.ipCount)).toBeGreaterThanOrEqual(5);
+    expect(Number(bundle.accountCount)).toBeGreaterThanOrEqual(15);
   });
 
   it('F13: calculates multi-family consensus severity correctly', () => {

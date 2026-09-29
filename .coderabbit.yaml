@@ -29,3 +29,7 @@ path_instructions:
     instructions: "Verify SHA-256 hash chaining integrity and tamper-evidence guarantees."
   - path: "src/normalize/**"
     instructions: "Verify credentials and passwords are never persisted and timestamps are strictly normalized."
+  - path: "src/app/api/**"
+    instructions: "Enforce strict Zod schema validation, checkRateLimit usage, and generic error response envelopes without stack trace leakage."
+  - path: "docs/**"
+    instructions: "Verify architectural consistency with Quorum PRD v4, anti-vibecoding rules, and deterministic consensus equations."

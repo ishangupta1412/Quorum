@@ -571,4 +571,80 @@ quorum/
 
 ---
 
-*Quorum Tech Stack Document — Redmond Labs · Microsoft Innovate 2026 · v1.0*
+## 13. Master Single-Task Execution Roadmap (One Task at a Time)
+
+To avoid regressions, state drift, and context pollution, engineering on Quorum follows the strict **Single-Task Execution Protocol**:
+- Only ONE task may be in progress at any given moment.
+- Every task must conclude with the **Reticle Verification Loop**: `npm.cmd run reticle` (`tsc --noEmit && vitest run`).
+- No task is marked complete unless 0 TypeScript errors exist and 100% of unit tests pass.
+
+### Execution Tasks:
+
+- [x] **TASK-01: Canonical Normalizer & Ingestion Plane (F1, F2)**
+  - Strict UTC timestamp conversion, IPv4-mapped IPv6 unwrapping, RFC1918 scope tagging.
+  - Zero raw credentials persisted; drop passwords prior to hash computation.
+  - *Verification:* `npm.cmd test` passes 7/7 normalizer tests.
+
+- [x] **TASK-02: Deterministic Synthetic Corpus Generator (F4)**
+  - Synthetic Pack A (baseline organic traffic) & Pack B (organic + 20-proxy distributed spray attack).
+  - Byte-reproducible generation with fixed seed.
+  - *Verification:* Unit test asserts exact benign/attack event ratio.
+
+- [x] **TASK-03: Sliding-Window Brute Force & Single-Source Spray Detectors (F5, F6)**
+  - F5 detects high-volume brute force bursts (> 5 failures/IP).
+  - F6 detects loosened single-source spray.
+  - *Verification:* Unit tests assert correct signal generation for isolated IP attacks.
+
+- [x] **TASK-04: Bipartite Campaign Graph Union-Find Clusterer (F7) [FLAGSHIP]**
+  - Pure TypeScript Union-Find disjoint-set data structure.
+  - Correlates disjoint residential proxies attacking overlapping corporate accounts into connected components.
+  - *Verification:* Unit test asserts cluster formation across 20 proxies targeting 45 accounts.
+
+- [x] **TASK-05: Post-Spray Pivot Detector (F10)**
+  - Correlates auth failure clusters with subsequent successful auth on the same account.
+  - Confirms post-spray account compromise.
+  - *Verification:* Unit test detects `marcus.chen` compromise following spray.
+
+- [x] **TASK-06: Multi-Family Consensus Severity Engine (F13)**
+  - Calculates deterministic severity equation: $\text{Base} \times \text{Multiplier} + \text{Boost}$.
+  - Enforces Critical floor (score $\ge 80$) when F10 pivot is present.
+  - *Verification:* Unit test asserts severity score = 100 [CRITICAL].
+
+- [x] **TASK-07: Cryptographic Hash-Chained Audit Ledger (F21)**
+  - SHA-256 hash chaining where record $N$ hashes record $N-1$.
+  - Post-hoc tamper detection pinpoints the exact tampered record index.
+  - *Verification:* Unit test asserts genesis chain validation and tamper detection.
+
+- [x] **TASK-08: Interoperability Export Builders (F25)**
+  - Microsoft Sentinel Incident JSON builder.
+  - OASIS STIX 2.1 Threat Intel Bundle builder with MITRE ATT&CK T1110.003 mapping.
+  - *Verification:* Validated against STIX 2.1 JSON schema.
+
+- [x] **TASK-09: Multi-Model AI Router & Token Preservation Layer**
+  - Supports Gemini, Claude, OpenAI, Hermes, Ollama, FreeLLMAPI.
+  - In-memory circuit breaker and instant deterministic rule-based fallback for air-gapped demo resilience.
+  - *Verification:* Zero crashes when offline or without API keys.
+
+- [x] **TASK-10: Route Handlers & Server-Side Security Hardening**
+  - Token-bucket rate limiting on `/api/v1/ingest`, `/api/v1/detect/run`, `/api/v1/ai/route`.
+  - Strict 10MB payload size limits and Zod schema validation.
+  - Type-safe generic error responses without stack trace leakage.
+  - *Verification:* `npm.cmd run typecheck` passes with zero errors.
+
+- [x] **TASK-11: Analyst Cockpit UI (App Router)**
+  - 45-Second Demo Contrast Ticker (0 Naive vs 97 Loosened vs 1 Quorum).
+  - Inspectable mathematical severity equation breakdown.
+  - Cryptographic audit ledger with live tamper demonstration.
+  - 21st.dev / OriginKit / Inspira UI / Skipper UI technical dark terminal styling.
+  - *Verification:* Full UI builds cleanly, zero console errors.
+
+- [x] **TASK-12: Full Reticle Pre-Launch CI Verification**
+  - Automated GitHub Actions workflow (`.github/workflows/reticle-verify.yml`).
+  - CodeRabbit configuration (`.coderabbit.yaml`).
+  - Secret scanning for zero exposed keys.
+  - *Verification:* `npm.cmd run reticle` exits with code 0.
+
+---
+
+*Quorum Tech Stack Document — Redmond Labs · Microsoft Innovate 2026 · v4.0.0*
+

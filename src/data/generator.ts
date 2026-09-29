@@ -77,70 +77,76 @@ export function generateSyntheticCorpus(options: GeneratorOptions = {}): Synthet
     }
   }
 
-  // 2. Inject Flagship Attack: Distributed Password Spray (Midnight Blizzard style)
-  // 12 proxy IPs, 35 distinct targeted accounts, each IP touches 3-4 accounts
+  // 2. Inject Attack Scenarios ONLY for Pack B (Pack A is pure benign baseline)
+  const isAttackPack = (options.pack ?? 'B') === 'B';
   const sprayIps: string[] = [];
-  for (let i = 1; i <= 12; i++) {
-    sprayIps.push(`203.0.113.${10 + i}`);
-  }
-
-  const targetedAccounts = userList.slice(0, 35);
+  let compromisedUser = '';
   let attackCount = 0;
 
-  for (let ipIdx = 0; ipIdx < sprayIps.length; ipIdx++) {
-    const ip = sprayIps[ipIdx];
-    // Each IP sprays 3 accounts
-    for (let a = 0; a < 3; a++) {
-      const userIndex = (ipIdx * 2 + a) % targetedAccounts.length;
-      const targetUser = targetedAccounts[userIndex];
-      const sprayOffsetMs = 24 * 3600 * 1000 + (ipIdx * 300 + a * 60) * 1000;
+  if (isAttackPack) {
+    // 2. Inject Flagship Attack: Distributed Password Spray (Midnight Blizzard style)
+    // 12 proxy IPs, 35 distinct targeted accounts, each IP touches 3-4 accounts
+    for (let i = 1; i <= 12; i++) {
+      sprayIps.push(`203.0.113.${10 + i}`);
+    }
 
-      const norm = normalizeAuthEvent({
-        rawTimestamp: new Date(baseTimeMs + sprayOffsetMs).toISOString(),
-        rawUser: targetUser,
-        rawIp: ip,
+    const targetedAccounts = userList.slice(0, 35);
+
+    for (let ipIdx = 0; ipIdx < sprayIps.length; ipIdx++) {
+      const ip = sprayIps[ipIdx];
+      // Each IP sprays 3 accounts
+      for (let a = 0; a < 3; a++) {
+        const userIndex = (ipIdx * 2 + a) % targetedAccounts.length;
+        const targetUser = targetedAccounts[userIndex];
+        const sprayOffsetMs = 24 * 3600 * 1000 + (ipIdx * 300 + a * 60) * 1000;
+
+        const norm = normalizeAuthEvent({
+          rawTimestamp: new Date(baseTimeMs + sprayOffsetMs).toISOString(),
+          rawUser: targetUser,
+          rawIp: ip,
+          rawOutcome: 'FAILURE_BAD_CREDENTIALS',
+          sourceSystem: 'CiscoAnyConnect',
+        });
+
+        if (norm.event) {
+          events.push(norm.event);
+          attackCount++;
+        }
+      }
+    }
+
+    // 3. Inject Climax: Post-Spray Pivot (F10)
+    // Target user_0001 is compromised via residential IP 203.0.113.11 with a SUCCESS login!
+    compromisedUser = targetedAccounts[0];
+    const pivotTimeMs = baseTimeMs + 28 * 3600 * 1000;
+    const pivotEvent = normalizeAuthEvent({
+      rawTimestamp: new Date(pivotTimeMs).toISOString(),
+      rawUser: compromisedUser,
+      rawIp: '203.0.113.11',
+      rawOutcome: 'SUCCESS',
+      sourceSystem: 'CiscoAnyConnect',
+    });
+
+    if (pivotEvent.event) {
+      events.push(pivotEvent.event);
+      attackCount++;
+    }
+
+    // 4. Inject Localized Brute Force (F5 comparison) on user_0099
+    const bruteUser = userList[userList.length - 1];
+    const bruteIp = '198.51.100.99';
+    for (let b = 0; b < 6; b++) {
+      const bEvent = normalizeAuthEvent({
+        rawTimestamp: new Date(baseTimeMs + 3600 * 1000 + b * 60 * 1000).toISOString(),
+        rawUser: bruteUser,
+        rawIp: bruteIp,
         rawOutcome: 'FAILURE_BAD_CREDENTIALS',
         sourceSystem: 'CiscoAnyConnect',
       });
-
-      if (norm.event) {
-        events.push(norm.event);
+      if (bEvent.event) {
+        events.push(bEvent.event);
         attackCount++;
       }
-    }
-  }
-
-  // 3. Inject Climax: Post-Spray Pivot (F10)
-  // Target user_0001 is compromised via residential IP 203.0.113.11 with a SUCCESS login!
-  const compromisedUser = targetedAccounts[0];
-  const pivotTimeMs = baseTimeMs + 28 * 3600 * 1000;
-  const pivotEvent = normalizeAuthEvent({
-    rawTimestamp: new Date(pivotTimeMs).toISOString(),
-    rawUser: compromisedUser,
-    rawIp: '203.0.113.11',
-    rawOutcome: 'SUCCESS',
-    sourceSystem: 'CiscoAnyConnect',
-  });
-
-  if (pivotEvent.event) {
-    events.push(pivotEvent.event);
-    attackCount++;
-  }
-
-  // 4. Inject Localized Brute Force (F5 comparison) on user_0099
-  const bruteUser = userList[userList.length - 1];
-  const bruteIp = '198.51.100.99';
-  for (let b = 0; b < 6; b++) {
-    const bEvent = normalizeAuthEvent({
-      rawTimestamp: new Date(baseTimeMs + 3600 * 1000 + b * 60 * 1000).toISOString(),
-      rawUser: bruteUser,
-      rawIp: bruteIp,
-      rawOutcome: 'FAILURE_BAD_CREDENTIALS',
-      sourceSystem: 'CiscoAnyConnect',
-    });
-    if (bEvent.event) {
-      events.push(bEvent.event);
-      attackCount++;
     }
   }
 

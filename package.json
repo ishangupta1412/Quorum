@@ -11,6 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js",
     "test:watch": "vitest",
+    "verify": "npm run typecheck && npm test",
+    "reticle": "npm run typecheck && npm test",
     "gen": "node --loader ts-node/esm scripts/generate-corpus.ts"
   },
   "dependencies": {

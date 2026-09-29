@@ -1,0 +1,43 @@
+name: Reticle Verification Loop
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  reticle-loop:
+    name: Reticle Verification (TypeScript Strict + Unit Tests + Anti-Vibecode)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Step 1 - TypeScript Strict Check (0 errors allowed)
+        run: npm run typecheck
+
+      - name: Step 2 - Deterministic Unit Tests (100% pass)
+        run: npm test
+
+      - name: Step 3 - Reticle Complete Verification
+        run: npm run reticle
+
+      - name: Step 4 - Verify Secret Hygiene & Zero Hardcoded API Keys
+        run: |
+          if grep -rn "sk-[a-zA-Z0-9]\{20,\}" src/ tests/; then
+            echo "CRITICAL: Hardcoded API key detected in source code!"
+            exit 1
+          fi
+          echo "Secret hygiene verified: Clean."
