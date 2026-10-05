@@ -1,4 +1,4 @@
-﻿# Security Policy
+# Security Policy
 
 ## Supported Versions
 
@@ -15,7 +15,7 @@
 
 Report security issues privately via one of:
 
-1. **GitHub Private Vulnerability Reporting** — use the "Report a vulnerability" button on the [Security tab](https://github.com/yourusername/quorum/security/advisories)
+1. **GitHub Private Vulnerability Reporting** — use the "Report a vulnerability" button on the [Security tab](https://github.com/ishangupta1412/Quorum/security/advisories)
 2. **Email** — contact the maintainer directly (see GitHub profile)
 
 Include as much detail as possible:

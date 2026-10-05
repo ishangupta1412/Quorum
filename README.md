@@ -9,7 +9,7 @@
 <p><strong>Campaign-correlation detection for enterprise VPN authentication telemetry.</strong><br/>
 Stop Midnight Blizzard–style distributed password sprays that bypass traditional SIEM threshold rules.</p>
 
-[![CI](https://github.com/yourusername/quorum/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/quorum/actions/workflows/ci.yml)
+[![CI](https://github.com/ishangupta1412/Quorum/actions/workflows/ci.yml/badge.svg)](https://github.com/ishangupta1412/Quorum/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-55%2F55%20passing-10B981?style=flat-square)](./tests)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript)](./tsconfig.json)
 [![Next.js](https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -100,7 +100,7 @@ Quorum uses **bipartite graph Union-Find clustering** + **multi-family consensus
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/quorum.git
+git clone https://github.com/ishangupta1412/Quorum.git
 cd quorum
 npm install
 ```

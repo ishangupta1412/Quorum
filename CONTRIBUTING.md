@@ -1,4 +1,4 @@
-﻿# Contributing to Quorum
+# Contributing to Quorum
 
 Thank you for your interest in contributing to Quorum. This document covers everything you need to know to contribute effectively.
 
@@ -10,7 +10,7 @@ Thank you for your interest in contributing to Quorum. This document covers ever
 - **npm** >= 10
 
 ```bash
-git clone https://github.com/yourusername/quorum.git
+git clone https://github.com/ishangupta1412/Quorum.git
 cd quorum
 npm install
 ```
