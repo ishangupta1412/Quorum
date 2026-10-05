@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/screenshots/core-dashboard.jpg" alt="Quorum — SOC Detection Engine" width="100%" />
+<img src="docs/assets/recordings/demo-simulation.gif" alt="Quorum — Live Bipartite Graph Simulation" width="100%" />
 
 <br /><br />
 
@@ -32,22 +32,50 @@ Quorum uses **bipartite graph Union-Find clustering** + **multi-family consensus
 
 ---
 
-## Screenshots
+## Live Attack Demonstration & Visual Suite
+
+### Real-Time Detection & Compromise Pivot Simulation
+
+<div align="center">
+  <img src="docs/assets/recordings/demo-pivot-trigger.gif" alt="Real-time Pivot Trigger and Escalation" width="100%" />
+</div>
+
+<br />
+
+### Interface Gallery
 
 <table>
   <tr>
-    <td align="center"><strong>Core SOC Console</strong></td>
-    <td align="center"><strong>Nexus Bipartite Graph</strong></td>
+    <td align="center" width="50%"><strong>Nexus 3D Cyber Threat Globe</strong></td>
+    <td align="center" width="50%"><strong>Bipartite Topology & Pivot Edges</strong></td>
   </tr>
   <tr>
-    <td><img src="docs/assets/screenshots/core-dashboard.jpg" alt="Core SOC Console" /></td>
-    <td><img src="docs/assets/screenshots/nexus-graph.jpg" alt="Nexus Attack Graph" /></td>
+    <td><img src="docs/assets/screenshots/nexus-3d-globe.png" alt="Nexus 3D Globe" /></td>
+    <td><img src="docs/assets/screenshots/bipartite-graph-dashboard.png" alt="Bipartite Attack Topology" /></td>
   </tr>
   <tr>
-    <td align="center" colspan="2"><strong>Forensics Audit Ledger</strong></td>
+    <td align="center" width="50%"><strong>Live Bipartite Graph & Toast Alerts</strong></td>
+    <td align="center" width="50%"><strong>Tactical Triage & Failure Rate Curve</strong></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="docs/assets/screenshots/forensics-ledger.jpg" alt="Forensics SHA-256 Audit Ledger" /></td>
+    <td><img src="docs/assets/screenshots/nexus-live-simulation.png" alt="Live Graph Simulation" /></td>
+    <td><img src="docs/assets/screenshots/analysis-tactical-triage.png" alt="Tactical Triage Analysis" /></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><strong>IP Geographic Tracker & Proxy Chain</strong></td>
+    <td align="center" width="50%"><strong>Cryptographic SHA-256 Audit Ledger</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/forensics-ip-tracker.png" alt="IP Geographic Tracker" /></td>
+    <td><img src="docs/assets/screenshots/forensics-audit-ledger.png" alt="Cryptographic Audit Ledger" /></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><strong>Landing Hero Console</strong></td>
+    <td align="center" width="50%"><strong>Telemetry Corpus & Scenario Ingestion</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/hero-landing.png" alt="Hero Landing Page" /></td>
+    <td><img src="docs/assets/screenshots/telemetry-ingestion-corpus.png" alt="Telemetry Ingestion" /></td>
   </tr>
 </table>
 
