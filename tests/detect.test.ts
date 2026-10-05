@@ -4,6 +4,7 @@ import { runDetectionPipeline } from '../src/detect/engine';
 import { detectBruteForce } from '../src/detect/brute-force';
 import { detectCampaignGraph } from '../src/detect/campaign-graph';
 import { calculateConsensusSeverity } from '../src/detect/consensus';
+import { AntigravityDetector } from '../src/detect/antigravity';
 import { Signal } from '../src/types/auth-event';
 
 describe('Quorum Detection Plane', () => {
@@ -68,7 +69,7 @@ describe('Quorum Detection Plane', () => {
     const result = calculateConsensusSeverity(mockSignals);
     expect(result.severityScore).toBe(100);
     expect(result.severityTier).toBe('CRITICAL');
-    expect(result.severityEquation).toContain('Base 100 (F10_pivot)');
+    expect(result.severityEquation).toContain('Base 100 (Pivot Detector)');
     expect(result.severityEquation).toContain('2 families');
   });
 
@@ -86,4 +87,38 @@ describe('Quorum Detection Plane', () => {
     expect(mainIncident.familiesPresent).toContain('GRAPH');
     expect(mainIncident.familiesPresent).toContain('PIVOT');
   });
+
+  it('Antigravity ML: produces valid ML Signal and integrates into F13 Consensus Engine', () => {
+    const mlSignal = AntigravityDetector.evaluateLocal(corpus.events, 8.8);
+    expect(mlSignal !== null).toBe(true);
+    if (!mlSignal) return;
+
+    expect(mlSignal.detectorFamily).toBe('ML');
+    expect(mlSignal.detectorId).toBe('antigravity-01');
+    expect(mlSignal.confidenceScore).toBe(88);
+    expect(mlSignal.entityType).toBe('campaign');
+    expect(mlSignal.mitreTechnique).toBe('T1110.003');
+
+    // Test consensus integration with ML family
+    const signalsWithMl: Signal[] = [
+      {
+        id: 'sig_1',
+        detectorId: 'F7_campaign',
+        detectorFamily: 'GRAPH',
+        confidenceScore: 85,
+        entityKey: 'campaign:c1',
+        eventHashes: [],
+        evidenceBundle: {},
+        timestamp: '2026-09-28T12:00:00Z',
+      },
+      mlSignal,
+    ];
+
+    const consensus = calculateConsensusSeverity(signalsWithMl);
+    expect(consensus.familiesPresent).toContain('ML');
+    expect(consensus.familiesPresent).toContain('GRAPH');
+    expect(consensus.familiesPresent.length).toBe(2);
+    expect(consensus.severityScore).toBeGreaterThanOrEqual(85);
+  });
 });
+

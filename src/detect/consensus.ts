@@ -77,7 +77,17 @@ export function calculateConsensusSeverity(signals: readonly Signal[]): Consensu
   const floorNotice = floor > 0 ? `floor ${floor} → ` : '';
   const bonusNotice = bonus > 0 ? ` + ${bonus} (auth success)` : '';
 
-  const severityEquation = `Base ${baseScore} (${leadSignal.detectorId}) × ${multiplier.toFixed(2)} (${familiesPresent.length} families: ${familiesStr})${bonusNotice} → ${floorNotice}clipped ${finalScore} [${severityTier}]`;
+  // Human-readable label map — keep internal IDs in logic, show clean names in UI
+  const DETECTOR_LABELS: Record<string, string> = {
+    F5_brute:      'Brute Force',
+    F6_spray:      'Spray Detector',
+    F7_campaign:   'Campaign Graph',
+    F10_pivot:     'Pivot Detector',
+    'antigravity-01': 'Anomaly Model',
+  };
+  const leadLabel = DETECTOR_LABELS[leadSignal.detectorId] ?? leadSignal.detectorId;
+
+  const severityEquation = `Base ${baseScore} (${leadLabel}) × ${multiplier.toFixed(2)} (${familiesPresent.length} families: ${familiesStr})${bonusNotice} → ${floorNotice}clipped ${finalScore} [${severityTier}]`;
 
   return {
     severityScore: finalScore,

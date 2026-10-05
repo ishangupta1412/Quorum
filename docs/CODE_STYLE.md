@@ -1,5 +1,5 @@
-# Quorum — Code Style & Engineering Standards
-**TypeScript Strict Mode · Microsoft Innovate 2026**
+﻿# Quorum â€” Code Style & Engineering Standards
+**TypeScript Strict Mode Â· Microsoft Innovate 2026**
 
 ---
 
@@ -17,27 +17,27 @@
 
 ```
 src/
-├── app/                  # Next.js 14 App Router (pages & layout)
-│   ├── api/              # Route Handlers (Server-side endpoints)
-│   └── cockpit/          # Analyst Cockpit UI pages
-├── components/           # Reusable React components (Tailwind + Lucide/OriginKit)
-│   ├── cockpit/          # Domain-specific cockpit widgets
-│   └── ui/               # Primitive UI tokens (Buttons, Cards, Badges)
-├── detect/               # Pure TypeScript Detection Plane
-│   ├── brute-force.ts    # F5: Sliding-window brute force
-│   ├── spray-single.ts   # F6: Single-source password spray
-│   ├── campaign-graph.ts # F7: Bipartite graph Union-Find clusterer
-│   ├── pivot.ts          # F10: Post-spray pivot detector
-│   └── consensus.ts      # F13: Quorum consensus severity engine
-├── normalize/            # Ingestion & Canonicalization (F1, F2)
-│   ├── normalizer.ts     # AuthEvent normalizer
-│   └── parsers/          # CSV, Syslog, JSONL parsers
-├── lib/                  # Shared utilities
-│   ├── supabase/         # Supabase client (client & server instances)
-│   ├── crypto/           # SHA-256 hash chaining & verification
-│   └── export/           # Sentinel JSON and STIX 2.1 serialization
-└── types/                # Canonical TypeScript types & interfaces
-    └── auth-event.ts     # AuthEvent, Signal, Incident, AuditRecord definitions
+â”œâ”€â”€ app/                  # Next.js 14 App Router (pages & layout)
+â”‚   â”œâ”€â”€ api/              # Route Handlers (Server-side endpoints)
+â”‚   â””â”€â”€ core/          # The Core UI pages
+â”œâ”€â”€ components/           # Reusable React components (Tailwind + Lucide/OriginKit)
+â”‚   â”œâ”€â”€ core/          # Domain-specific The Core widgets
+â”‚   â””â”€â”€ ui/               # Primitive UI tokens (Buttons, Cards, Badges)
+â”œâ”€â”€ detect/               # Pure TypeScript Detection Plane
+â”‚   â”œâ”€â”€ brute-force.ts    # F5: Sliding-window brute force
+â”‚   â”œâ”€â”€ spray-single.ts   # F6: Single-source password spray
+â”‚   â”œâ”€â”€ campaign-graph.ts # F7: Bipartite graph Union-Find clusterer
+â”‚   â”œâ”€â”€ pivot.ts          # F10: Post-spray pivot detector
+â”‚   â””â”€â”€ consensus.ts      # F13: Quorum consensus severity engine
+â”œâ”€â”€ normalize/            # Ingestion & Canonicalization (F1, F2)
+â”‚   â”œâ”€â”€ normalizer.ts     # AuthEvent normalizer
+â”‚   â””â”€â”€ parsers/          # CSV, Syslog, JSONL parsers
+â”œâ”€â”€ lib/                  # Shared utilities
+â”‚   â”œâ”€â”€ supabase/         # Supabase client (client & server instances)
+â”‚   â”œâ”€â”€ crypto/           # SHA-256 hash chaining & verification
+â”‚   â””â”€â”€ export/           # Sentinel JSON and STIX 2.1 serialization
+â””â”€â”€ types/                # Canonical TypeScript types & interfaces
+    â””â”€â”€ auth-event.ts     # AuthEvent, Signal, Incident, AuditRecord definitions
 ```
 
 ---
@@ -66,3 +66,4 @@ pnpm test
 # Run ESLint check
 pnpm lint
 ```
+

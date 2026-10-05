@@ -26,7 +26,8 @@ export async function POST(request: Request) {
 
     // Generate or fetch telemetry pack
     const corpus = generateSyntheticCorpus({ pack });
-    const result = runDetectionPipeline(corpus.events);
+    const eventsToProcess = Array.isArray(body.events) && body.events.length > 0 ? body.events : corpus.events;
+    const result = runDetectionPipeline(eventsToProcess);
 
     return NextResponse.json({
       success: true,

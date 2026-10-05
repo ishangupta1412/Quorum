@@ -55,10 +55,11 @@ describe('F21 Cryptographic Hash-Chained Audit Ledger', () => {
 
     expect(ledger.verify().valid).toBe(true);
 
-    // Simulate malicious tamper at record 0
-    ledger.tamperRecordForDemo(0, 'malicious_altered_payload_hash');
+    // Simulate malicious tamper at record 0 on an attacker-mutated COPY:
+    // the live chain itself is never mutated.
+    const tamperedLedger = ledger.createTamperedCopy(0, 'malicious_altered_payload_hash');
 
-    const tamperedVerification = ledger.verify();
+    const tamperedVerification = tamperedLedger.verify();
     expect(tamperedVerification.valid).toBe(false);
     expect(tamperedVerification.tamperedIndex).toBe(0);
     expect(tamperedVerification.errorDetails).toContain('Tamper detected');

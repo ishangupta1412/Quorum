@@ -1,6 +1,6 @@
 {
   "name": "quorum",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "private": true,
   "description": "A Campaign-Correlation Detection Layer for VPN Authentication Telemetry - Microsoft Innovate 2026",
   "scripts": {
@@ -9,20 +9,26 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js",
+    "test": "tsc -p tsconfig.test.json && node --test \"dist-test/tests/*.test.js\"",
     "test:watch": "vitest",
     "verify": "npm run typecheck && npm test",
     "reticle": "npm run typecheck && npm test",
     "gen": "node --loader ts-node/esm scripts/generate-corpus.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "@types/three": "^0.186.0",
     "clsx": "^2.1.1",
+    "cobe": "^2.0.1",
+    "framer-motion": "^13.5.0",
     "lucide-react": "^0.453.0",
     "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.4",
-    "zod": "^3.23.8"
+    "three": "^0.186.1",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/node": "^20.16.11",

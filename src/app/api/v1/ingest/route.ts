@@ -1,12 +1,21 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { parseJsonLines } from '@/normalize/parsers';
 import { checkRateLimit } from '@/lib/rate-limiter';
+import { getClientIp, utf8ByteLength } from '@/lib/security/redteam';
 
 const MAX_PAYLOAD_BYTES = 10 * 1024 * 1024; // 10MB limit
 
+const IngestSchema = z.object({
+  // Telemetry content: JSONL or CSV text. Bounded at schema level.
+  content: z.string().max(MAX_PAYLOAD_BYTES).optional(),
+  lines: z.array(z.string().max(64 * 1024)).max(200_000).optional(),
+  sourceSystem: z.string().max(128).optional(),
+});
+
 export async function POST(request: Request) {
   try {
-    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const rateLimit = checkRateLimit(`ingest:${clientIp}`, { maxTokens: 100, refillRatePerSec: 2 });
     if (!rateLimit.allowed) {
       return NextResponse.json(
@@ -22,8 +31,25 @@ export async function POST(request: Request) {
       );
     }
 
+    // Early rejection before buffering: a 1GB+ crafted body is refused by header,
+    // not absorbed into memory (F1 acceptance: 413 before full buffering).
+    const declaredLength = Number(request.headers.get('content-length') ?? '0');
+    if (Number.isFinite(declaredLength) && declaredLength > MAX_PAYLOAD_BYTES) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'PAYLOAD_TOO_LARGE',
+            message: 'Telemetry payload exceeds maximum allowed size of 10MB.',
+          },
+        },
+        { status: 413 }
+      );
+    }
+
     const rawText = await request.text();
-    if (rawText.length > MAX_PAYLOAD_BYTES) {
+    // Byte-accurate enforcement (a string can exceed its char count in UTF-8).
+    if (utf8ByteLength(rawText) > MAX_PAYLOAD_BYTES) {
       return NextResponse.json(
         {
           success: false,
@@ -44,8 +70,23 @@ export async function POST(request: Request) {
       }
     })();
 
-    const rawContent = body.content || (Array.isArray(body.lines) ? body.lines.join('\n') : '');
-    const sourceSystem = body.sourceSystem || 'CiscoAnyConnect';
+    const parsed = IngestSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'VALIDATION_FAILED',
+            message: 'Ingest envelope failed schema validation.',
+            details: parsed.error.flatten().fieldErrors,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    const rawContent = parsed.data.content ?? (parsed.data.lines ? parsed.data.lines.join('\n') : '');
+    const sourceSystem = parsed.data.sourceSystem ?? 'CiscoAnyConnect';
 
     if (!rawContent || rawContent.trim() === '') {
       return NextResponse.json(

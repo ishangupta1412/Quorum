@@ -143,16 +143,19 @@ export class AuditLedger {
   }
 
   /**
-   * Stage demonstration method: intentionally mutates a record to prove tamper detection works!
+   * Stage demonstration helper (F21 tamper demo): returns a NEW ledger whose
+   * record at `index` carries an attacker-supplied payload hash, simulating a
+   * malicious database UPDATE. The live chain is never mutated — an immutable
+   * evidence store must stay verifiable after the demo, so calling `verify()`
+   * on `this` still reports valid. Verify the returned copy to see tamper
+   * detection localize the modified record.
    */
-  tamperRecordForDemo(index: number, fakePayloadHash: string): void {
-    if (index >= 0 && index < this.chain.length) {
-      const record = this.chain[index];
-      // Force rewrite without re-signing to simulate malicious DB update
-      (this.chain[index] as any) = {
-        ...record,
-        payloadHash: fakePayloadHash,
-      };
+  createTamperedCopy(index: number, fakePayloadHash: string): AuditLedger {
+    const copy = new AuditLedger(this.chain);
+    if (index >= 0 && index < copy.chain.length) {
+      const record = copy.chain[index];
+      copy.chain[index] = { ...record, payloadHash: fakePayloadHash };
     }
+    return copy;
   }
 }

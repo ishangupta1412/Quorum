@@ -8,6 +8,14 @@ export interface BruteForceConfig {
 /**
  * F5: Sliding-Window Brute Force Detector
  * Catches traditional loud single-IP -> single-account brute-force attacks.
+ *
+ * Red-team hardening (2026-09-29): the naive implementation recomputed the
+ * in-window set with an O(n) filter per event, giving O(n^2) per group. A
+ * hostile 100k-event burst against one (user, IP) pair pinned a CPU core
+ * (found in red-team pass 1). This scan keeps two forward-only pointers
+ * (i = window anchor, j = last in-window event), so the total work is
+ * amortized O(n) after the sort — with output byte-identical to the naive
+ * detector (same windows, same counts, same ids, same skip semantics).
  */
 export function detectBruteForce(
   events: readonly AuthEvent[],
@@ -31,40 +39,45 @@ export function detectBruteForce(
 
   for (const [key, group] of failureGroups.entries()) {
     const [userName, srcIp] = key.split('|');
-    // Sort events by timestamp
     const sorted = [...group].sort(
       (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
+    const times = sorted.map((e) => new Date(e.timestamp).getTime());
 
-    // Sliding window check
-    for (let i = 0; i < sorted.length; i++) {
-      const windowStartMs = new Date(sorted[i].timestamp).getTime();
-      const inWindow = sorted.filter((e) => {
-        const t = new Date(e.timestamp).getTime();
-        return t >= windowStartMs && t <= windowStartMs + windowMs;
-      });
+    let i = 0;
+    let j = 0;
+    while (i < sorted.length) {
+      if (j < i) j = i;
+      // Extend j to the last event still inside [times[i], times[i] + windowMs]
+      while (j + 1 < sorted.length && times[j + 1] - times[i] <= windowMs) {
+        j++;
+      }
+      const inWindowCount = j - i + 1;
 
-      if (inWindow.length >= config.failureThreshold) {
+      if (inWindowCount >= config.failureThreshold) {
+        const windowEvents = sorted.slice(i, j + 1);
         signals.push({
-          id: `sig_f5_${userName}_${srcIp}_${windowStartMs}`,
+          id: `sig_f5_${userName}_${srcIp}_${times[i]}`,
           detectorId: 'F5_brute',
           detectorFamily: 'VOLUME',
-          confidenceScore: Math.min(100, 50 + inWindow.length * 5),
+          confidenceScore: Math.min(100, 50 + inWindowCount * 5),
           entityKey: `user:${userName}`,
-          eventHashes: inWindow.map((e) => e.eventHash),
+          eventHashes: windowEvents.map((e) => e.eventHash),
           evidenceBundle: {
             userName,
             srcIp,
-            failureCount: inWindow.length,
+            failureCount: inWindowCount,
             windowMinutes: config.windowMinutes,
-            firstSeen: inWindow[0].timestamp,
-            lastSeen: inWindow[inWindow.length - 1].timestamp,
+            firstSeen: windowEvents[0].timestamp,
+            lastSeen: windowEvents[windowEvents.length - 1].timestamp,
           },
-          timestamp: inWindow[inWindow.length - 1].timestamp,
+          timestamp: windowEvents[windowEvents.length - 1].timestamp,
         });
 
-        // Advance index to end of burst to avoid duplicate overlapping signals
-        i += inWindow.length - 1;
+        // Skip past the entire burst (naive: i += inWindow.length - 1; i++)
+        i = j + 1;
+      } else {
+        i++;
       }
     }
   }

@@ -2,18 +2,30 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Quorum — Detection Layer for VPN Authentication Telemetry',
-  description: 'Enterprise Campaign-Correlation Engine for Microsoft Innovate 2026',
+  title: 'Quorum — Campaign-Correlation Detection',
+  description: 'Bipartite graph clustering engine that catches distributed password sprays missed by traditional SIEM threshold rules.',
+  keywords: 'NOBELIUM, password spray, bipartite graph, SIEM, threat detection, Microsoft Sentinel',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-base text-slate-200 antialiased selection:bg-rose-900 selection:text-white">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className="antialiased"
+        style={{
+          background: '#000',
+          color: '#CBD5E1',
+          fontFamily: "Inter, system-ui, sans-serif",
+        }}
+      >
         {children}
       </body>
     </html>

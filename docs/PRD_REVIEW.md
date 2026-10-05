@@ -1,5 +1,5 @@
-# Quorum — PRD Review & Improvement Strategy
-**Microsoft Innovate 2026 · Redmond Labs**
+﻿# Quorum â€” PRD Review & Improvement Strategy
+**Microsoft Innovate 2026 Â· Redmond Labs**
 
 ---
 
@@ -54,25 +54,25 @@ This review analyzes `Quorum_PRD_v4.md` against hackathon judging criteria, prod
 
 ```
 [Phase 1] Core Ingestion & Normalization
-  ├── F1: Multi-format ingest + rejection bucket (JSON lines, CSV, Syslog)
-  ├── F2: Canonical AuthEvent normalizer (UTC, IP unwrapping, RFC1918 scope)
-  └── F4: Deterministic synthetic generator & Pack A/B corpus
+  â”œâ”€â”€ F1: Multi-format ingest + rejection bucket (JSON lines, CSV, Syslog)
+  â”œâ”€â”€ F2: Canonical AuthEvent normalizer (UTC, IP unwrapping, RFC1918 scope)
+  â””â”€â”€ F4: Deterministic synthetic generator & Pack A/B corpus
 
 [Phase 2] Detection Plane (Pure TypeScript)
-  ├── F5: Sliding-window brute force detector (Baseline rule)
-  ├── F6: Single-source password spray detector (Loosened rule)
-  ├── F7: Bipartite campaign graph (Union-Find clustering) [FLAGSHIP]
-  ├── F10: Post-spray pivot detector (Auth failure cluster -> auth success)
-  └── F13: Quorum consensus severity engine (Deterministic equation)
+  â”œâ”€â”€ F5: Sliding-window brute force detector (Baseline rule)
+  â”œâ”€â”€ F6: Single-source password spray detector (Loosened rule)
+  â”œâ”€â”€ F7: Bipartite campaign graph (Union-Find clustering) [FLAGSHIP]
+  â”œâ”€â”€ F10: Post-spray pivot detector (Auth failure cluster -> auth success)
+  â””â”€â”€ F13: Quorum consensus severity engine (Deterministic equation)
 
-[Phase 3] Analyst Cockpit & Enterprise Trust
-  ├── F15/F16: Incident triage dashboard + interactive evidence timeline
-  ├── F21: Hash-chained audit ledger + live tamper demonstration
-  └── F22: Quality gates & honest limitations panel
+[Phase 3] The Core & Enterprise Trust
+  â”œâ”€â”€ F15/F16: Incident triage dashboard + interactive evidence timeline
+  â”œâ”€â”€ F21: Hash-chained audit ledger + live tamper demonstration
+  â””â”€â”€ F22: Quality gates & honest limitations panel
 
 [Phase 4] Trust Extras (Post-P0)
-  ├── F14: Suppression & tuning workbench (<60s recompute)
-  └── F25: Sentinel JSON / STIX 2.1 deterministic export + KQL gap docs
+  â”œâ”€â”€ F14: Suppression & tuning workbench (<60s recompute)
+  â””â”€â”€ F25: Sentinel JSON / STIX 2.1 deterministic export + KQL gap docs
 ```
 
 ---
@@ -89,3 +89,4 @@ This review analyzes `Quorum_PRD_v4.md` against hackathon judging criteria, prod
    - Initialize Next.js 14 App Router project with TypeScript and Tailwind CSS.
    - Set up Vitest for pure detection engine unit tests.
    - Implement the `AuthEvent` canonical interface and normalizer first.
+

@@ -21,6 +21,9 @@ export function expect<T>(actual: T) {
     toBeLessThan(expected: number) {
       assert.ok(Number(actual) < expected, `Expected ${actual} < ${expected}`);
     },
+    toBeLessThanOrEqual(expected: number) {
+      assert.ok(Number(actual) <= expected, `Expected ${actual} <= ${expected}`);
+    },
     toBeDefined() {
       assert.notStrictEqual(actual, undefined);
     },

@@ -56,9 +56,9 @@ describe('Ralph Loop — Continuous Ground Truth & Regression Assertion', () => 
     expect(initialVerify.valid).toBe(true);
     expect(initialVerify.totalRecords).toBe(1);
 
-    // Tamper test
-    ledger.tamperRecordForDemo(0, 'tampered_eval_payload');
-    const tamperedVerify = ledger.verify();
+    // Tamper test (on a copy — the live chain remains immutable)
+    const tamperedLedger = ledger.createTamperedCopy(0, 'tampered_eval_payload');
+    const tamperedVerify = tamperedLedger.verify();
     expect(tamperedVerify.valid).toBe(false);
     expect(tamperedVerify.tamperedIndex).toBe(0);
   });

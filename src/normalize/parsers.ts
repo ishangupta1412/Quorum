@@ -1,9 +1,20 @@
 import { normalizeAuthEvent, NormalizationResult } from './normalizer';
 import { IngestRejection, AuthEvent } from '../types/auth-event';
+import {
+  truncateRejectionRawLine,
+  sanitizeTelemetryRow,
+  readTelemetryField,
+} from '../lib/security/redteam';
 
 export interface BatchIngestResult {
   readonly accepted: readonly AuthEvent[];
   readonly rejected: readonly IngestRejection[];
+}
+
+/** Coerces a telemetry field to the string shape the F2 normalizer expects. */
+function fieldAsString(value: string | number | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  return String(value);
 }
 
 /**
@@ -22,27 +33,32 @@ export function parseJsonLines(
     if (!rawLine) continue;
 
     try {
-      const parsed = JSON.parse(rawLine);
+      // Credential-shaped keys are stripped BEFORE normalization so raw
+      // secrets can never reach an AuthEvent, evidence bundle, or log line.
+      const parsed = sanitizeTelemetryRow(JSON.parse(rawLine));
       const res: NormalizationResult = normalizeAuthEvent({
-        rawTimestamp: parsed.timestamp || parsed.time || parsed.ts,
-        rawUser: parsed.user || parsed.username || parsed.user_name,
-        rawIp: parsed.ip || parsed.src_ip || parsed.client_ip,
-        rawOutcome: parsed.outcome || parsed.action || parsed.status,
-        sourceSystem: parsed.source_system || parsed.source || defaultSource,
+        rawTimestamp: readTelemetryField(parsed, ['timestamp', 'time', 'ts']),
+        rawUser: fieldAsString(readTelemetryField(parsed, ['user', 'username', 'user_name'])),
+        rawIp: fieldAsString(readTelemetryField(parsed, ['ip', 'src_ip', 'client_ip'])),
+        rawOutcome: fieldAsString(readTelemetryField(parsed, ['outcome', 'action', 'status'])),
+        sourceSystem:
+          (readTelemetryField(parsed, ['source_system', 'source']) as string | undefined) ||
+          defaultSource,
       });
 
       if (res.event) {
         accepted.push(res.event);
       } else if (res.rejected) {
         rejected.push({
-          rawLine,
+          rawLine: truncateRejectionRawLine(rawLine),
           reasonCode: res.rejected.reasonCode,
           lineNumber: i + 1,
         });
       }
     } catch {
+      // rawLine is attacker-controlled: store a bounded sample, never the full line.
       rejected.push({
-        rawLine,
+        rawLine: truncateRejectionRawLine(rawLine),
         reasonCode: 'UNPARSEABLE',
         lineNumber: i + 1,
       });
@@ -78,7 +94,7 @@ export function parseCsvTelemetry(
     const cols = line.split(',').map((c) => c.trim().replace(/^["']|["']$/g, ''));
 
     if (cols.length < 3) {
-      rejected.push({ rawLine: line, reasonCode: 'UNPARSEABLE', lineNumber: i + 1 });
+      rejected.push({ rawLine: truncateRejectionRawLine(line), reasonCode: 'UNPARSEABLE', lineNumber: i + 1 });
       continue;
     }
 
@@ -93,7 +109,7 @@ export function parseCsvTelemetry(
     if (res.event) {
       accepted.push(res.event);
     } else if (res.rejected) {
-      rejected.push({ rawLine: line, reasonCode: res.rejected.reasonCode, lineNumber: i + 1 });
+      rejected.push({ rawLine: truncateRejectionRawLine(line), reasonCode: res.rejected.reasonCode, lineNumber: i + 1 });
     }
   }
 

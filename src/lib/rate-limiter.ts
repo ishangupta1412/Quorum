@@ -14,6 +14,9 @@ interface RateLimitConfig {
 
 const rateLimitBuckets = new Map<string, RateLimitRecord>();
 
+/** Red-team hardening: unbounded distinct identifiers (IP rotation attack) must not grow the map forever. */
+const MAX_BUCKETS = 10_000;
+
 // Default configuration: 60 requests per minute burst, refilling 1 token/sec
 const DEFAULT_CONFIG: RateLimitConfig = {
   maxTokens: 60,
@@ -29,6 +32,23 @@ export function checkRateLimit(
   config: RateLimitConfig = DEFAULT_CONFIG
 ): { allowed: boolean; remainingTokens: number; retryAfterSec?: number } {
   const now = Date.now();
+
+  // Eviction: when an attacker rotates identifiers faster than cleanup runs,
+  // cap the bucket population deterministically (oldest-refill eviction).
+  if (!rateLimitBuckets.has(identifier) && rateLimitBuckets.size >= MAX_BUCKETS) {
+    let oldestKey: string | null = null;
+    let oldestMs = Infinity;
+    for (const [key, record] of rateLimitBuckets.entries()) {
+      if (record.lastRefillMs < oldestMs) {
+        oldestMs = record.lastRefillMs;
+        oldestKey = key;
+      }
+    }
+    if (oldestKey !== null) {
+      rateLimitBuckets.delete(oldestKey);
+    }
+  }
+
   const record = rateLimitBuckets.get(identifier);
 
   if (!record) {
@@ -56,6 +76,14 @@ export function checkRateLimit(
 
   record.tokens = currentTokens - 1;
   return { allowed: true, remainingTokens: record.tokens };
+}
+
+/**
+ * Observability/test hook: current live bucket population.
+ * Used to assert the eviction cap bounds memory under identifier rotation.
+ */
+export function getRateLimitBucketCount(): number {
+  return rateLimitBuckets.size;
 }
 
 /**

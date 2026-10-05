@@ -25,17 +25,27 @@ export interface AuthEvent {
   readonly sourceSystem: string;       // e.g. CiscoAnyConnect, Fortinet, AzureVPN
 }
 
-export type DetectorFamily = 'VOLUME' | 'STATISTICAL' | 'GRAPH' | 'PIVOT';
+export type DetectorFamily = 'VOLUME' | 'STATISTICAL' | 'GRAPH' | 'PIVOT' | 'ML';
 
 export interface Signal {
   readonly id: string;
-  readonly detectorId: string;         // e.g. 'F5_brute', 'F6_spray', 'F7_campaign', 'F10_pivot'
+  readonly detectorId: string;         // e.g. 'F5_brute', 'F6_spray', 'F7_campaign', 'F10_pivot', 'antigravity-01'
   readonly detectorFamily: DetectorFamily;
   readonly confidenceScore: number;    // 0-100
   readonly entityKey: string;          // e.g. 'ip:198.51.100.22' or 'user:marcus'
   readonly eventHashes: readonly string[];
   readonly evidenceBundle: Record<string, unknown>;
   readonly timestamp: string;
+  // Optional Section 4.4 PRD protocol compatibility fields
+  readonly entityType?: string;
+  readonly entityValue?: string;
+  readonly windowStart?: string;
+  readonly windowEnd?: string;
+  readonly rawScore?: number;
+  readonly normalisedScore?: number;
+  readonly evidenceEventHashes?: readonly string[];
+  readonly mitreTechnique?: string;
+  readonly paramsSnapshot?: Record<string, unknown>;
 }
 
 export type SeverityTier = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';

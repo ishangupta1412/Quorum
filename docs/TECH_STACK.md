@@ -1,5 +1,5 @@
-# Quorum — Tech Stack Document
-**Microsoft Innovate 2026 · Redmond Labs**
+﻿# Quorum â€” Tech Stack Document
+**Microsoft Innovate 2026 Â· Redmond Labs**
 
 ---
 
@@ -25,10 +25,10 @@
 | Dimension | Choice | Why |
 |---|---|---|
 | Framework | Next.js 14 (App Router) | Server Components + Route Handlers; Vercel free-tier deploy |
-| Database | Supabase (Postgres 15) | RLS, Realtime, Auth, Storage — all in one free-tier project |
+| Database | Supabase (Postgres 15) | RLS, Realtime, Auth, Storage â€” all in one free-tier project |
 | Language | TypeScript strict | `tsc --strict`, zero `any` in detection plane |
 | Detection plane | Pure TypeScript, zero dependencies | No ML framework, no compiled extensions, fully unit-testable |
-| Auth | Supabase Auth (2 roles) | `analyst` + `admin` — JWT evaluated server-side in RLS |
+| Auth | Supabase Auth (2 roles) | `analyst` + `admin` â€” JWT evaluated server-side in RLS |
 | Deployment | Vercel (free tier) | Zero server/container config; demo runs offline on `supabase start` |
 | Testing | Vitest + Playwright | Vitest for pure detection functions; Playwright for 3 e2e journeys |
 | Styling | Tailwind CSS v3 | Utility-first, matches 21st.dev component patterns |
@@ -39,11 +39,11 @@
 ## 2. Core Stack
 
 ```
-Next.js 14          → App Router, Server Components, Route Handlers
-TypeScript 5.x      → strict mode, no any in src/detect/
-Supabase            → Postgres 15, Auth, Realtime, Storage
-Vercel              → Production deploy (never the live demo dependency)
-pnpm                → Package manager
+Next.js 14          â†’ App Router, Server Components, Route Handlers
+TypeScript 5.x      â†’ strict mode, no any in src/detect/
+Supabase            â†’ Postgres 15, Auth, Realtime, Storage
+Vercel              â†’ Production deploy (never the live demo dependency)
+pnpm                â†’ Package manager
 ```
 
 ### Node Version
@@ -74,7 +74,7 @@ Node.js >= 20.x LTS
 ### Validation
 
 ```bash
-# Must always pass — enforced in CI
+# Must always pass â€” enforced in CI
 tsc --strict --noEmit
 ```
 
@@ -110,14 +110,14 @@ supabase gen types typescript --local > src/lib/database.types.ts
 | Supabase Realtime | Incident queue live updates |
 | Supabase Storage | Sealed Pack B manifest + export files |
 | RPCs (SECURITY DEFINER) | `commit_detection_batch`, `submit_verdict` |
-| Row Level Security | Every table — `auth.jwt() ->> 'role'` evaluated server-side |
+| Row Level Security | Every table â€” `auth.jwt() ->> 'role'` evaluated server-side |
 
 ### Environment Variables
 
 ```env
 # .env.local (NEVER commit this file)
 NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>   # safe to expose — RLS scoped
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>   # safe to expose â€” RLS scoped
 
 # Server-only (NEVER in client bundle)
 SUPABASE_SERVICE_ROLE_KEY=<service-role>   # used only in Route Handlers
@@ -143,7 +143,7 @@ pnpm add geist                          # Next.js native font
 ### Component Libraries
 
 ```bash
-# 21st.dev — install components individually via their CLI
+# 21st.dev â€” install components individually via their CLI
 npx shadcn-ui@latest init              # base (21st.dev uses shadcn patterns)
 
 # Lenis smooth scroll
@@ -156,7 +156,7 @@ pnpm add @splinetool/react-spline @splinetool/runtime
 pnpm add framer-motion
 
 # Animate UI (install from GitHub)
-# https://animate-ui.com — copy components directly into src/components/animate-ui/
+# https://animate-ui.com â€” copy components directly into src/components/animate-ui/
 ```
 
 ### Fonts (Google Fonts + local)
@@ -195,7 +195,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    environment: 'node',         // detection plane — pure Node
+    environment: 'node',         // detection plane â€” pure Node
     include: ['src/**/*.test.ts'],
     coverage: {
       reporter: ['text', 'html'],
@@ -210,15 +210,15 @@ export default defineConfig({
 
 | Suite | Count | Runner |
 |---|---|---|
-| Detection plane unit tests | ≥ 130 | Vitest |
-| RLS + security adversarial tests | ≥ 30 | Vitest against local Supabase |
+| Detection plane unit tests | â‰¥ 130 | Vitest |
+| RLS + security adversarial tests | â‰¥ 30 | Vitest against local Supabase |
 | E2e journeys | 3 | Playwright |
 
 ### 3 Playwright E2E Journeys (Appendix E)
 
-1. **Ingest → Detection → Queue** — upload corpus, run pipeline, verify incident appears in queue
-2. **Incident Detail → Verdict Staging** — open incident, read equation, stage a verdict with confirmation modal
-3. **Audit Tamper Demo** — click tamper button, verify chain breaks and localizes broken row < 3s
+1. **Ingest â†’ Detection â†’ Queue** â€” upload corpus, run pipeline, verify incident appears in queue
+2. **Incident Detail â†’ Verdict Staging** â€” open incident, read equation, stage a verdict with confirmation modal
+3. **Audit Tamper Demo** â€” click tamper button, verify chain breaks and localizes broken row < 3s
 
 ---
 
@@ -348,8 +348,8 @@ chat:
 ### Rate Limiting
 
 ```ts
-// lib/rateLimit.ts — app-level rate limiting (backs Supabase Auth)
-// 5 failed attempts / IP / 5 minutes → 429
+// lib/rateLimit.ts â€” app-level rate limiting (backs Supabase Auth)
+// 5 failed attempts / IP / 5 minutes â†’ 429
 // Stored in Postgres so it survives serverless cold starts
 ```
 
@@ -474,18 +474,18 @@ supabase start
 
 ## 11. Environment Variables
 
-### Full `.env.example` (commit this — no real values)
+### Full `.env.example` (commit this â€” no real values)
 
 ```env
-# Supabase — local development
+# Supabase â€” local development
 NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-local-anon-key
 
-# Supabase — server-only (NEVER expose to client)
+# Supabase â€” server-only (NEVER expose to client)
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 SUPABASE_JWT_SECRET=your-jwt-secret
 
-# Demo mode — enables tamper fixture, demo routes
+# Demo mode â€” enables tamper fixture, demo routes
 # Set to true locally, NEVER set on Vercel production deploy
 NEXT_PUBLIC_DEMO_MODE=false
 
@@ -500,73 +500,73 @@ PACK_B_SEALED_AT=
 
 ```
 quorum/
-├── src/
-│   ├── detect/                  # Detection plane — pure TypeScript
-│   │   ├── types.ts             # AuthEvent, Signal, Incident interfaces
-│   │   ├── normalize.ts         # F2 — AuthEvent normalizer
-│   │   ├── bruteForce.ts        # F5 — Sliding-window brute-force rule
-│   │   ├── spray.ts             # F6 — Single-source spray rule
-│   │   ├── campaignGraph.ts     # F7 — Union-Find bipartite graph
-│   │   ├── baseline.ts          # F11 — Median/MAD baseline engine
-│   │   ├── mlScorer.ts          # F12 — Unsupervised vector anomaly scorer
-│   │   ├── pivot.ts             # F10 — Post-spray pivot detector
-│   │   └── quorum.ts            # F13 — Quorum severity engine
-│   ├── generator/               # F4 — Deterministic corpus generator
-│   │   └── index.ts
-│   ├── ingest/                  # F1 — Multi-format ingest
-│   │   ├── parser.ts
-│   │   └── rejection.ts
-│   ├── evaluation/              # F22 — Gate runner
-│   │   └── gateRunner.ts
-│   ├── export/                  # F25 — Sentinel / STIX exports
-│   │   ├── sentinel.ts
-│   │   └── stix.ts
-│   └── lib/
-│       ├── supabase.ts          # Client/server Supabase helpers
-│       └── database.types.ts    # Auto-generated from supabase gen types
-├── app/                         # Next.js App Router
-│   ├── layout.tsx
-│   ├── page.tsx                 # Landing hero (Screen 1)
-│   ├── incidents/
-│   │   ├── page.tsx             # Incident queue — F15 (Screen 2)
-│   │   └── [id]/page.tsx        # Incident detail — F16 (Screen 3)
-│   ├── audit/
-│   │   └── page.tsx             # Audit ledger — F21 (Screen 4)
-│   ├── quality/
-│   │   └── page.tsx             # Quality gates — F22 (Screen 5)
-│   ├── admin/
-│   │   └── tuning/page.tsx      # F14 tuning workbench
-│   └── api/
-│       ├── ingest/route.ts      # F1 ingest endpoint
-│       ├── detect/route.ts      # Detection pipeline trigger
-│       └── verify/route.ts      # F21 chain verification
-├── supabase/
-│   ├── migrations/              # All schema migrations
-│   │   ├── 001_core_tables.sql
-│   │   ├── 002_rls_policies.sql
-│   │   ├── 003_audit_ledger.sql
-│   │   └── 004_rpcs.sql
-│   ├── seed.sql                 # Analyst + admin role seeding
-│   └── config.toml
-├── tests/
-│   ├── detect/                  # Vitest unit tests (≥130 tests)
-│   ├── security/                # RLS adversarial tests
-│   └── e2e/                     # Playwright journeys
-├── docs/
-│   ├── DESIGN_DOC.md
-│   ├── TECH_STACK.md
-│   ├── SECURITY.md
-│   ├── CODE_STYLE.md
-│   ├── DATABASE.md
-│   └── API_GUIDE.md
-│   └── kql/                     # F25 KQL reference files
-├── .github/
-│   ├── workflows/ci.yml
-│   └── .coderabbit.yaml
-├── .env.example
-├── .env.local                   # GITIGNORED — never commit
-├── .gitignore
-└── README.md
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ detect/                  # Detection plane â€” pure TypeScript
+â”‚   â”‚   â”œâ”€â”€ types.ts             # AuthEvent, Signal, Incident interfaces
+â”‚   â”‚   â”œâ”€â”€ normalize.ts         # F2 â€” AuthEvent normalizer
+â”‚   â”‚   â”œâ”€â”€ bruteForce.ts        # F5 â€” Sliding-window brute-force rule
+â”‚   â”‚   â”œâ”€â”€ spray.ts             # F6 â€” Single-source spray rule
+â”‚   â”‚   â”œâ”€â”€ campaignGraph.ts     # F7 â€” Union-Find bipartite graph
+â”‚   â”‚   â”œâ”€â”€ baseline.ts          # F11 â€” Median/MAD baseline engine
+â”‚   â”‚   â”œâ”€â”€ mlScorer.ts          # F12 â€” Unsupervised vector anomaly scorer
+â”‚   â”‚   â”œâ”€â”€ pivot.ts             # F10 â€” Post-spray pivot detector
+â”‚   â”‚   â””â”€â”€ quorum.ts            # F13 â€” Quorum severity engine
+â”‚   â”œâ”€â”€ generator/               # F4 â€” Deterministic corpus generator
+â”‚   â”‚   â””â”€â”€ index.ts
+â”‚   â”œâ”€â”€ ingest/                  # F1 â€” Multi-format ingest
+â”‚   â”‚   â”œâ”€â”€ parser.ts
+â”‚   â”‚   â””â”€â”€ rejection.ts
+â”‚   â”œâ”€â”€ evaluation/              # F22 â€” Gate runner
+â”‚   â”‚   â””â”€â”€ gateRunner.ts
+â”‚   â”œâ”€â”€ export/                  # F25 â€” Sentinel / STIX exports
+â”‚   â”‚   â”œâ”€â”€ sentinel.ts
+â”‚   â”‚   â””â”€â”€ stix.ts
+â”‚   â””â”€â”€ lib/
+â”‚       â”œâ”€â”€ supabase.ts          # Client/server Supabase helpers
+â”‚       â””â”€â”€ database.types.ts    # Auto-generated from supabase gen types
+â”œâ”€â”€ app/                         # Next.js App Router
+â”‚   â”œâ”€â”€ layout.tsx
+â”‚   â”œâ”€â”€ page.tsx                 # Landing hero (Screen 1)
+â”‚   â”œâ”€â”€ incidents/
+â”‚   â”‚   â”œâ”€â”€ page.tsx             # Incident queue â€” F15 (Screen 2)
+â”‚   â”‚   â””â”€â”€ [id]/page.tsx        # Incident detail â€” F16 (Screen 3)
+â”‚   â”œâ”€â”€ audit/
+â”‚   â”‚   â””â”€â”€ page.tsx             # Audit ledger â€” F21 (Screen 4)
+â”‚   â”œâ”€â”€ quality/
+â”‚   â”‚   â””â”€â”€ page.tsx             # Quality gates â€” F22 (Screen 5)
+â”‚   â”œâ”€â”€ admin/
+â”‚   â”‚   â””â”€â”€ tuning/page.tsx      # F14 tuning workbench
+â”‚   â””â”€â”€ api/
+â”‚       â”œâ”€â”€ ingest/route.ts      # F1 ingest endpoint
+â”‚       â”œâ”€â”€ detect/route.ts      # Detection pipeline trigger
+â”‚       â””â”€â”€ verify/route.ts      # F21 chain verification
+â”œâ”€â”€ supabase/
+â”‚   â”œâ”€â”€ migrations/              # All schema migrations
+â”‚   â”‚   â”œâ”€â”€ 001_core_tables.sql
+â”‚   â”‚   â”œâ”€â”€ 002_rls_policies.sql
+â”‚   â”‚   â”œâ”€â”€ 003_audit_ledger.sql
+â”‚   â”‚   â””â”€â”€ 004_rpcs.sql
+â”‚   â”œâ”€â”€ seed.sql                 # Analyst + admin role seeding
+â”‚   â””â”€â”€ config.toml
+â”œâ”€â”€ tests/
+â”‚   â”œâ”€â”€ detect/                  # Vitest unit tests (â‰¥130 tests)
+â”‚   â”œâ”€â”€ security/                # RLS adversarial tests
+â”‚   â””â”€â”€ e2e/                     # Playwright journeys
+â”œâ”€â”€ docs/
+â”‚   â”œâ”€â”€ DESIGN_DOC.md
+â”‚   â”œâ”€â”€ TECH_STACK.md
+â”‚   â”œâ”€â”€ SECURITY.md
+â”‚   â”œâ”€â”€ CODE_STYLE.md
+â”‚   â”œâ”€â”€ DATABASE.md
+â”‚   â””â”€â”€ API_GUIDE.md
+â”‚   â””â”€â”€ kql/                     # F25 KQL reference files
+â”œâ”€â”€ .github/
+â”‚   â”œâ”€â”€ workflows/ci.yml
+â”‚   â””â”€â”€ .coderabbit.yaml
+â”œâ”€â”€ .env.example
+â”œâ”€â”€ .env.local                   # GITIGNORED â€” never commit
+â”œâ”€â”€ .gitignore
+â””â”€â”€ README.md
 ```
 
 ---
@@ -631,7 +631,7 @@ To avoid regressions, state drift, and context pollution, engineering on Quorum 
   - Type-safe generic error responses without stack trace leakage.
   - *Verification:* `npm.cmd run typecheck` passes with zero errors.
 
-- [x] **TASK-11: Analyst Cockpit UI (App Router)**
+- [x] **TASK-11: The Core UI (App Router)**
   - 45-Second Demo Contrast Ticker (0 Naive vs 97 Loosened vs 1 Quorum).
   - Inspectable mathematical severity equation breakdown.
   - Cryptographic audit ledger with live tamper demonstration.
@@ -646,5 +646,6 @@ To avoid regressions, state drift, and context pollution, engineering on Quorum 
 
 ---
 
-*Quorum Tech Stack Document — Redmond Labs · Microsoft Innovate 2026 · v4.0.0*
+*Quorum Tech Stack Document â€” Redmond Labs Â· Microsoft Innovate 2026 Â· v4.0.0*
+
 

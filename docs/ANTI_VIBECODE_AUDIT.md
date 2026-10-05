@@ -1,18 +1,18 @@
-# Quorum — Anti-Vibecoding Master Audit & Floto Roast Defense
-**Microsoft Innovate 2026 · Redmond Labs**
+﻿# Quorum â€” Anti-Vibecoding Master Audit & Floto Roast Defense
+**Microsoft Innovate 2026 Â· Redmond Labs**
 
 ---
 
 ## 1. The 30 Reasons Your Site Looks Vibecoded (And How Quorum Avoids Them)
 
-| # | Vibecoding Cliché | Why It Errodes Trust | Quorum Engineering Defense |
+| # | Vibecoding ClichÃ© | Why It Errodes Trust | Quorum Engineering Defense |
 |---|---|---|---|
 | 1 | **Harsh gradients** | Screams AI marketing landing page. | Canvas is true-black `#000000` with subtle `#080C14` technical slate cards. Zero saturated linear gradients. |
 | 2 | **Lucide icon spray** | Generic icons everywhere without semantic purpose. | Icons restricted to functional operations (`RefreshCw` for rerun, `Shield` for cryptographic chain, `Download` for export). |
 | 3 | **Pure white background** | Causes eyestrain in SOC darkrooms; un-technical. | Deep `#000000` dark intelligence terminal design system. |
 | 4 | **Rainbow coloring** | Confuses severity hierarchy. | Colors restricted strictly to severity tokens (`#DC2626` Critical, `#D97706` Warning, `#059669` Safe, `#6B7280` Info). |
 | 5 | **Exaggerated drop shadows** | Blurry glow masks poorly structured layouts. | Crisp 1px rule borders (`rgba(255,255,255,0.08)`) with zero heavy drop shadows. |
-| 6 | **3 feature cards in a row** | Generic SaaS template cliché. | Layout mirrors SOC workflows: 3-lens contrast ticker at the top, primary incident inspector, and cryptographic audit timeline below. |
+| 6 | **3 feature cards in a row** | Generic SaaS template clichÃ©. | Layout mirrors SOC workflows: 3-lens contrast ticker at the top, primary incident inspector, and cryptographic audit timeline below. |
 | 7 | **Emojis in data** | Destroys credibility in front of Microsoft security judges. | Zero emojis in machine data, logs, IP addresses, or mathematical equations. |
 | 8 | **Liquid glass / heavy blur** | Heavy `backdrop-filter: blur(20px)` impedes reading. | Solid technical surfaces (`#080C14` and `#0D1220`) for instant legibility. |
 | 9 | **Generic bento grids** | Arbitrary box sizes with decorative filler. | Data-dense tables and bipartite network topology cards where every pixel serves analyst triage. |
@@ -22,11 +22,11 @@
 | 13 | **3 pricing tiers** | Inappropriate for an enterprise security engineering prototype. | Replaced with Quality Gates & Limitations panel (F22) and Ground Truth evaluation metrics. |
 | 14 | **No real product demos** | Static mock screenshots or unreactive UI. | Interactive detection trigger that computes live Union-Find clustering across Pack B telemetry in < 50ms. |
 | 15 | **Soft pill radius on cards** | Looks like a consumer mobile app. | Strict 4px/8px technical corner radii (`rounded-md`); pill shapes restricted exclusively to inline severity badges. |
-| 16 | **Purple and black cliché** | The hallmark of AI wrappers. | True-black, technical slate, and crimson/amber severity accents. Zero purple accent gradients. |
+| 16 | **Purple and black clichÃ©** | The hallmark of AI wrappers. | True-black, technical slate, and crimson/amber severity accents. Zero purple accent gradients. |
 | 17 | **No skeleton loaders** | Abrupt UI jumps when fetching data. | Built-in skeleton loading pulses for asynchronous pipeline triggers. |
 | 18 | **Radial orbs / glow blobs** | Distracting background blobs. | Clean, distraction-free matte black canvas. |
 | 19 | **Dot grids / grid lines** | AI template clutter. | Minimalist clean canvas with data-driven focus. |
-| 20 | **Sparkle icons (`✨`)** | Implies unreliable AI hallucination. | Zero sparkle icons. All detection logic is grounded in deterministic TypeScript math. |
+| 20 | **Sparkle icons (`âœ¨`)** | Implies unreliable AI hallucination. | Zero sparkle icons. All detection logic is grounded in deterministic TypeScript math. |
 | 21 | **Animated bouncing arrows** | Distracting motion. | Instantaneous CSS transitions (max 150ms ease-out) for functional user actions. |
 | 22 | **No TOS / privacy policy** | Unprofessional. | Dedicated enterprise data retention and compliance documentation (`docs/SECURITY.md`). |
 | 23 | **Excessive hover animations** | Elements tilting, floating, or bouncing. | Subtle border opacity shifts (`border-white/20`) on hover. |
@@ -54,4 +54,5 @@ If subjected to an automated or human engineering roast (e.g. Floto), Quorum pas
    - Loosened threshold: **97 alerts** (floods SOC queue with false positives).
    - Quorum Consensus: **1 Correlated Critical Incident** (`Base 100 * 1.00 + 15 -> 100 [CRITICAL]`).
 4. **"Can an attacker tamper with the logs?"**  
-   *Defense:* Every record commits to the prior record's SHA-256 digest in `audit_ledger`. Click "Simulate Database Tamper" in the Cockpit to watch the cryptographic verifier immediately pinpoint the exact tampered record index!
+   *Defense:* Every record commits to the prior record's SHA-256 digest in `audit_ledger`. Click "Simulate Database Tamper" in the The Core to watch the cryptographic verifier immediately pinpoint the exact tampered record index!
+

@@ -1,5 +1,5 @@
-# Quorum — Pre-Launch Hardening & "Don't Get Sued" Master Checklist
-**Microsoft Innovate 2026 · Redmond Labs**
+﻿# Quorum â€” Pre-Launch Hardening & "Don't Get Sued" Master Checklist
+**Microsoft Innovate 2026 Â· Redmond Labs**
 
 ---
 
@@ -18,7 +18,7 @@
 | **9. Handle API Errors** | API errors return uniform, generic envelopes (`{ success: false, error: { code, message } }`). Internal stack traces and database schemas are stripped. | **VERIFIED** |
 | **10. Remove Debug Logs** | Production build strips `console.log` statements containing raw event hashes or usernames. ESLint rules enforce zero raw log leakage. | **VERIFIED** |
 | **11. Hide Sensitive Errors** | Next.js custom error boundaries (`error.tsx`) render technical error panels without leaking server environment variables or raw SQL queries. | **VERIFIED** |
-| **12. Test Mobile Layouts** | Responsive Tailwind breakpoints (`sm:`, `md:`, `lg:`) ensure the Analyst Cockpit renders cleanly on desktop terminals, tablets, and mobile triage viewports. | **VERIFIED** |
+| **12. Test Mobile Layouts** | Responsive Tailwind breakpoints (`sm:`, `md:`, `lg:`) ensure the The Core renders cleanly on desktop terminals, tablets, and mobile triage viewports. | **VERIFIED** |
 | **13. Test Slow Internet / Latency** | Offline Demo Mode (`NEXT_PUBLIC_DEMO_OFFLINE=true`) and deterministic fallback in `src/lib/ai/router.ts` guarantee instant sub-50ms rendering even on stage Wi-Fi drops. | **VERIFIED** |
 | **14. Payment & Webhooks** | Out-of-scope for enterprise SOC detection layer. System includes zero third-party billing webhooks or payment processors to eliminate financial attack surface. | **N/A (Enterprise Tool)** |
 | **15. Try to Break Your App** | Fuzz testing and edge-case unit tests in `tests/` test for clock drift (< year 2000), IPv6-mapped IPv4, zero-division in consensus arithmetic, and tampering detection. | **VERIFIED** |
@@ -49,3 +49,4 @@ Before deploying or demonstrating Quorum at Microsoft Innovate 2026, verify thes
 18. **Add Account Deletion:** Telemetry and incident history can be purged per tenant via administrative purge RPC.
 19. **Check Regional Requirements:** Compliant with EU GDPR and US CCPA principles through credential minimization and telemetry pseudonymization.
 20. **Run a Pre-Launch Audit:** Complete Reticle verification (`npm.cmd run reticle`) passing with 0 TypeScript errors and 100% unit test coverage.
+

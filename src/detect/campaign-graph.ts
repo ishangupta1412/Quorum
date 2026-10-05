@@ -4,7 +4,11 @@ export interface CampaignGraphConfig {
   minIps: number; // default 5 (to catch distributed sprays)
   minAccounts: number; // default 15
   windowHours: number; // default 72 hours (3 days)
+  maxEvidenceHashes?: number; // evidence-bundle cap (red-team hardening, default 500)
 }
+
+/** Evidence-bundle governance: a hostile 1M-event burst must not bloat a single signal. */
+const DEFAULT_MAX_EVIDENCE_HASHES = 500;
 
 /**
  * Disjoint Set (Union-Find) with path compression and rank optimization.
@@ -67,6 +71,7 @@ export function detectCampaignGraph(
     minIps: 5,
     minAccounts: 15,
     windowHours: 72,
+    maxEvidenceHashes: DEFAULT_MAX_EVIDENCE_HASHES,
   }
 ): readonly Signal[] {
   const windowMs = config.windowHours * 3600 * 1000;
@@ -134,19 +139,24 @@ export function detectCampaignGraph(
       const times = timestampsByComponent.get(root) || [];
       const latestTime = times.length > 0 ? times[times.length - 1] : new Date().toISOString();
 
+      // Evidence bounded: keep the FIRST maxEvidenceHashes hashes in deterministic
+      // chronological order; full counts remain reported via totalEvents.
+      const evidenceCap = config.maxEvidenceHashes ?? DEFAULT_MAX_EVIDENCE_HASHES;
+      const boundedHashes = hashes.slice(0, Math.max(1, evidenceCap));
+
       signals.push({
         id: `sig_f7_campaign_cluster_${clusterIndex}`,
         detectorId: 'F7_campaign',
         detectorFamily: 'GRAPH',
         confidenceScore: Math.min(100, 75 + comp.ips.size * 2),
         entityKey: `cluster:${root}`,
-        eventHashes: hashes,
+        eventHashes: boundedHashes,
         evidenceBundle: {
           clusterId: clusterIndex,
           ipCount: comp.ips.size,
-          contributingIps: Array.from(comp.ips).slice(0, 100),
+          contributingIps: Array.from(comp.ips).sort().slice(0, 100),
           accountCount: comp.users.size,
-          targetedAccounts: Array.from(comp.users).slice(0, 100),
+          targetedAccounts: Array.from(comp.users).sort().slice(0, 100),
           totalEvents: hashes.length,
           densityRatio: Math.round((hashes.length / (comp.ips.size * comp.users.size)) * 1000) / 1000,
         },
