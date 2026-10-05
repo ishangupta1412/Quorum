@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 <img src="docs/assets/screenshots/core-dashboard.jpg" alt="Quorum — SOC Detection Engine" width="100%" />
 
@@ -129,7 +129,7 @@ All three must pass before any commit lands on `main`.
 |---|---|
 | `/` | Landing — project overview and live demo link |
 | `/core` | **SOC Console** — run detection on Pack A (benign) vs Pack B (attack) |
-| `/nexus` | **Bipartite Graph** — interactive D3 force-graph, click clusters to inspect pivot |
+| `/core/nexus` | **Bipartite Graph** — interactive D3 force-graph, click clusters to inspect pivot |
 | `/core/analysis` | **Evidence Stream** — per-event telemetry with severity timeline |
 | `/core/forensics` | **Audit Ledger** — SHA-256 hash chain with tamper simulation |
 
