@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, X, Zap, Shield, Radio } from 'lucide-react';
 import { create } from 'zustand';
+import { soundEngine } from '@/lib/sound/audio-cues';
 
 export type ToastSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'INFO';
 
@@ -133,14 +134,14 @@ function ToastCard({ toast }: { toast: QuorumToast }) {
           <div className="flex items-center gap-2">
             <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: cfg.color }} />
             <span
-              className="text-[9px] font-mono font-bold tracking-[0.15em] uppercase"
+              className="text-xs font-mono font-bold tracking-[0.15em] uppercase"
               style={{ color: cfg.color }}
             >
               {cfg.label}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[8px] font-mono text-slate-600">
+            <span className="text-xs font-mono text-slate-400">
               {new Date(toast.timestamp).toLocaleTimeString('en-US', { hour12: false })}
             </span>
             <button
@@ -161,14 +162,14 @@ function ToastCard({ toast }: { toast: QuorumToast }) {
         </p>
 
         {/* Detail */}
-        <p className="text-[10px] font-mono text-slate-400 mt-0.5 leading-relaxed">
+        <p className="text-xs font-mono text-slate-400 mt-0.5 leading-relaxed">
           {toast.detail}
         </p>
 
         {/* Equation chip */}
         {toast.equation && (
           <div
-            className="mt-2 px-2 py-1 rounded-sm text-[9px] font-mono leading-relaxed"
+            className="mt-2 px-2 py-1 rounded-sm text-xs font-mono leading-relaxed"
             style={{
               background: 'rgba(0,0,0,0.4)',
               border: '1px solid rgba(255,255,255,0.06)',
@@ -201,57 +202,16 @@ function ToastCard({ toast }: { toast: QuorumToast }) {
 // Sound Design Hook (Web Audio API — no external assets)
 // ────────────────────────────────────────────────────────────────────────────
 export function useQuorumSound() {
-  const ctxRef = useRef<AudioContext | null>(null);
-
-  const getCtx = useCallback(() => {
-    if (!ctxRef.current) {
-      ctxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const playAlert = useCallback((severity: ToastSeverity) => {
+    if (soundEngine.isMuted()) return;
+    if (severity === 'CRITICAL') {
+      soundEngine.playPivotChime();
+    } else if (severity === 'HIGH') {
+      soundEngine.playThreatAlert();
+    } else {
+      soundEngine.playDispatchSound();
     }
-    return ctxRef.current;
   }, []);
-
-  const playAlert = useCallback(
-    (severity: ToastSeverity) => {
-      try {
-        const ctx = getCtx();
-        const now = ctx.currentTime;
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (severity === 'CRITICAL') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(880, now);
-          osc.frequency.exponentialRampToValueAtTime(440, now + 0.15);
-          osc.frequency.exponentialRampToValueAtTime(660, now + 0.3);
-          gain.gain.setValueAtTime(0.06, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-          osc.start(now);
-          osc.stop(now + 0.5);
-        } else if (severity === 'HIGH') {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(660, now);
-          osc.frequency.exponentialRampToValueAtTime(440, now + 0.2);
-          gain.gain.setValueAtTime(0.04, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-          osc.start(now);
-          osc.stop(now + 0.35);
-        } else {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, now);
-          gain.gain.setValueAtTime(0.025, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-          osc.start(now);
-          osc.stop(now + 0.25);
-        }
-      } catch {
-        // Audio context not available
-      }
-    },
-    [getCtx]
-  );
 
   return { playAlert };
 }

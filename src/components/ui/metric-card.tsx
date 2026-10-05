@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { cn } from "@/lib/utils";
 
 export type MetricSeverity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -70,7 +70,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
                 severity === "CRITICAL" && "animate-pulse"
               )}
             />
-            <span className={cn("text-[10px] font-mono font-semibold uppercase", sevConfig.text)}>
+            <span className={cn("text-xs font-mono font-semibold uppercase", sevConfig.text)}>
               {severity}
             </span>
           </div>
@@ -82,7 +82,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       </div>
 
       {subtitle && (
-        <p className="mt-1 text-xs font-mono text-slate-500">
+        <p className="mt-1 text-xs font-mono text-slate-300">
           {subtitle}
         </p>
       )}

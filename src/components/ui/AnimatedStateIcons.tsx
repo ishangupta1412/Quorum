@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, CheckCircle2, Clock, Loader2, ShieldAlert, XCircle } from 'lucide-react';
 
@@ -56,7 +56,7 @@ export function AnimatedStateIcon({
         </div>
         {showLabel && (
           <span
-            className="text-[9px] font-mono font-bold tracking-widest"
+            className="text-xs font-mono font-bold tracking-widest"
             style={{ color: cfg.color }}
           >
             {cfg.label}

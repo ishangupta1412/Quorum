@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { MapPin } from 'lucide-react';
@@ -104,16 +104,16 @@ export function ExpandMap({ location = 'Unknown', coordinates = '0.0000, 0.0000'
             <MapPin className="w-3.5 h-3.5 text-[#DC2626]" />
             <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-white/5 border border-white/8">
               <div className="w-1 h-1 rounded-full bg-[#DC2626] animate-pulse" />
-              <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Tracking</span>
+              <span className="text-xs font-mono text-slate-300 uppercase tracking-widest">Tracking</span>
             </div>
           </div>
 
           <div className="space-y-0.5">
-            {ip && <p className="text-[11px] font-mono text-[#DC2626]">{ip}</p>}
+            {ip && <p className="text-xs font-mono text-[#DC2626]">{ip}</p>}
             <p className="text-xs font-semibold text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{location}</p>
             <AnimatePresence>
               {isExpanded && (
-                <motion.p className="text-[10px] font-mono text-slate-600"
+                <motion.p className="text-xs font-mono text-slate-400"
                   initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   {coordinates}
                 </motion.p>

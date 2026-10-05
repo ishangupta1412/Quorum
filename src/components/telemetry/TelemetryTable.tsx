@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo } from 'react';
 import { AuthEvent } from '@/types/auth-event';
@@ -47,7 +47,7 @@ export function TelemetryTable({ events, sprayIps, compromisedAccounts }: Teleme
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             Canonical Authentication Telemetry
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-400">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/10 text-slate-400">
               Canonical Normalizer
             </span>
           </h3>
@@ -59,7 +59,7 @@ export function TelemetryTable({ events, sprayIps, compromisedAccounts }: Teleme
         {/* Filter & Search Bar */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-64">
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5" />
+            <Search className="w-3.5 h-3.5 text-slate-300 absolute left-2.5 top-2.5" />
             <input
               type="text"
               value={searchTerm}
@@ -68,7 +68,7 @@ export function TelemetryTable({ events, sprayIps, compromisedAccounts }: Teleme
                 setPage(0);
               }}
               placeholder="Search IP, User, Hash..."
-              className="w-full bg-black border border-white/10 rounded pl-8 pr-3 py-1.5 text-xs font-mono text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50"
+              className="w-full bg-black border border-white/10 rounded pl-8 pr-3 py-1.5 text-xs font-mono text-slate-200 placeholder:text-slate-400 focus:outline-none focus:border-rose-500/50"
             />
           </div>
 
@@ -98,7 +98,7 @@ export function TelemetryTable({ events, sprayIps, compromisedAccounts }: Teleme
       {/* Table */}
       <div className="overflow-x-auto rounded border border-white/5 bg-black">
         <table className="w-full text-left font-mono text-xs">
-          <thead className="bg-[#04070C] text-[10px] text-slate-500 uppercase border-b border-white/10">
+          <thead className="bg-[#04070C] text-xs text-slate-300 uppercase border-b border-white/10">
             <tr>
               <th className="p-2.5">Timestamp (UTC)</th>
               <th className="p-2.5">Source IP</th>
@@ -125,17 +125,17 @@ export function TelemetryTable({ events, sprayIps, compromisedAccounts }: Teleme
                     <span className={isSpray ? 'text-rose-400 font-bold' : 'text-slate-200'}>
                       {e.srcIp}
                     </span>
-                    {isSpray && <span className="ml-1 text-[9px] px-1 py-0.5 rounded bg-rose-500/20 text-rose-300">PROXY</span>}
+                    {isSpray && <span className="ml-1 text-xs px-1 py-0.5 rounded bg-rose-500/20 text-rose-300">PROXY</span>}
                   </td>
                   <td className="p-2.5 whitespace-nowrap">
                     <span className={isCompromised ? 'text-rose-400 font-bold underline' : 'text-slate-200'}>
                       {e.userName}
                     </span>
-                    {isPivot && <span className="ml-1 text-[9px] px-1 py-0.5 rounded bg-rose-600 text-white font-bold">BREACH</span>}
+                    {isPivot && <span className="ml-1 text-xs px-1 py-0.5 rounded bg-rose-600 text-white font-bold">BREACH</span>}
                   </td>
                   <td className="p-2.5 whitespace-nowrap">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] ${
+                      className={`px-2 py-0.5 rounded text-xs ${
                         e.eventOutcome === 'SUCCESS'
                           ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
                           : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
@@ -145,7 +145,7 @@ export function TelemetryTable({ events, sprayIps, compromisedAccounts }: Teleme
                     </span>
                   </td>
                   <td className="p-2.5 text-slate-400 whitespace-nowrap">{e.sourceSystem}</td>
-                  <td className="p-2.5 text-slate-600 truncate max-w-[140px] text-[10px]">{e.eventHash}</td>
+                  <td className="p-2.5 text-slate-400 truncate max-w-[140px] text-xs">{e.eventHash}</td>
                 </tr>
               );
             })}

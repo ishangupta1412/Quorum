@@ -35,11 +35,16 @@ body::before {
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
 
 body {
   background-color: var(--canvas);
-  color: #CBD5E1;
+  color: #E2E8F0;
+  font-size: 16px;
+  line-height: 1.6;
   font-family: var(--font-body);
   margin: 0; padding: 0;
   overflow-x: hidden;
@@ -85,8 +90,8 @@ body {
 .glow-critical { box-shadow: 0 0 24px rgba(220,38,38,0.35), 0 0 64px rgba(220,38,38,0.1); }
 .glow-amber    { box-shadow: 0 0 24px rgba(245,158,11,0.3), 0 0 64px rgba(245,158,11,0.08); }
 .glow-emerald  { box-shadow: 0 0 24px rgba(16,185,129,0.3), 0 0 64px rgba(16,185,129,0.08); }
-.text-glow-red { text-shadow: 0 0 20px rgba(220,38,38,0.6), 0 0 60px rgba(220,38,38,0.2); }
-.text-glow-white { text-shadow: 0 0 40px rgba(255,255,255,0.15); }
+.text-glow-red { text-shadow: 0 0 20px rgba(220,38,38,0.8), 0 0 60px rgba(220,38,38,0.35); }
+.text-glow-white { text-shadow: 0 0 40px rgba(255,255,255,0.25); }
 
 .letter-in {
   display: inline-block;
@@ -97,7 +102,7 @@ body {
 @keyframes letter-rise { to { opacity: 1; transform: translateY(0); } }
 
 .typewriter-cursor::after {
-  content: 'u2588';
+  content: '\2588';
   animation: blink 1s step-end infinite;
   margin-left: 2px;
   color: var(--col-critical);
@@ -192,8 +197,8 @@ body {
 .hr-grid { border:none; height:1px; background: linear-gradient(90deg,transparent,var(--border-bright),transparent); }
 
 .phase-badge {
-  font-family: var(--font-mono); font-size:0.65rem; font-weight:600;
-  letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; border-radius:4px; border:1px solid;
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 4px; border: 1px solid;
 }
 
 /* ==========================================================================
@@ -350,10 +355,10 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  opacity: calc(0.05 + var(--intensity) * 0.95);
+  font-size: 0.85rem;
+  opacity: calc(0.08 + var(--intensity) * 0.92);
   color: color-mix(in srgb, #DC2626 calc(var(--intensity) * 100%), #1E3A5F);
-  text-shadow: 0 0 calc(var(--intensity) * 12px) #DC2626;
+  text-shadow: 0 0 calc(var(--intensity) * 14px) #DC2626;
   transform: scale(calc(1 + var(--intensity) * 0.15));
   transition: color 0.15s, text-shadow 0.15s, transform 0.15s;
   user-select: none;

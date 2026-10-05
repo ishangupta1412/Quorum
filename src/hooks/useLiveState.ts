@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
@@ -72,6 +72,7 @@ export function useLiveState({
   const lastPivotAtRef  = useRef<string | null>(null);
   const onUpdateRef     = useRef(onUpdate);
   const onPivotRef      = useRef(onPivot);
+  const pollCleanupRef  = useRef<(() => void) | null>(null);
   onUpdateRef.current   = onUpdate;
   onPivotRef.current    = onPivot;
 
@@ -92,6 +93,9 @@ export function useLiveState({
 
   // ── HTTP poll fallback ────────────────────────────────────────────────────
   const startPolling = useCallback(() => {
+    if (pollCleanupRef.current) {
+      pollCleanupRef.current();
+    }
     setTransport('polling');
     const controller = new AbortController();
 
@@ -102,8 +106,7 @@ export function useLiveState({
           headers: { 'Cache-Control': 'no-store' },
         });
         if (!res.ok) return;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const data = await res.json() as Record<string, any>;
+                const data = await res.json() as Record<string, any>;
         if (data['success'] === false) return;
 
         // Convert the API response shape to a SimulationStateRow-compatible object
@@ -152,10 +155,12 @@ export function useLiveState({
 
     poll();
     const id = setInterval(poll, POLL_INTERVAL_MS);
-    return () => {
+    const cleanup = () => {
       clearInterval(id);
       controller.abort();
     };
+    pollCleanupRef.current = cleanup;
+    return cleanup;
   }, []);
 
   // ── Supabase Realtime path ────────────────────────────────────────────────
@@ -225,6 +230,7 @@ export function useLiveState({
 
     return () => {
       clearTimeout(timeoutId);
+      pollCleanupRef.current?.();
       client.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

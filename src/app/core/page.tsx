@@ -16,6 +16,8 @@ import { ConsensusInspector } from '@/components/consensus/ConsensusInspector';
 import { MetricCard, DetailPanel, PlainTooltip } from '@/components/ui';
 import { CoreNav } from '@/components/ui/CoreNav';
 import { QuorumToastContainer, pushToast } from '@/components/ui/ToastSystem';
+import { RawEvidenceModal } from '@/components/ui/RawEvidenceModal';
+import { soundEngine } from '@/lib/sound/audio-cues';
 import {
   Shield,
   AlertTriangle,
@@ -43,6 +45,7 @@ export default function AnalystCorePage() {
   const [naiveAlerts, setNaiveAlerts] = useState<number | null>(null);
   const [loosenedAlerts, setLoosenedAlerts] = useState<number | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isRawEvidenceOpen, setIsRawEvidenceOpen] = useState(false);
 
   // Active view tab
   const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'timeline' | 'ledger' | 'telemetry'>('overview');
@@ -81,7 +84,7 @@ export default function AnalystCorePage() {
         const res = runDetectionPipeline(eventsToAnalyze);
         setDetectionResult(res);
 
-        // 3. Fire toast notification on significant incidents
+        // 3. Fire toast notification and audio cues on significant incidents
         const primary = res.incidents[0];
         if (primary) {
           const toastSev = primary.severityTier === 'CRITICAL' ? 'CRITICAL'
@@ -94,6 +97,14 @@ export default function AnalystCorePage() {
             detail: `${res.signals.length} signals · ${res.incidents.length} incident(s) · ${eventsToAnalyze.length} events`,
             equation: primary.severityEquation,
           });
+
+          // Procedural Audio Cues (Improvement 1)
+          if (primary.severityTier === 'CRITICAL' || primary.severityTier === 'HIGH') {
+            soundEngine.playThreatAlert();
+            if (primary.compromisedAccounts.length > 0) {
+              setTimeout(() => soundEngine.playPivotChime(), 400);
+            }
+          }
         }
 
         // 4. Append to SHA-256 Audit Ledger (F21)
@@ -196,7 +207,7 @@ export default function AnalystCorePage() {
     null;
 
   return (
-    <main className="min-h-screen bg-black text-slate-200 p-4 sm:p-6 font-sans">
+    <main className="min-h-screen bg-black text-slate-200 p-4 sm:p-6 pl-[72px] font-sans">
       {/* Global toast overlay */}
       <QuorumToastContainer />
       {/* Top Header */}
@@ -217,6 +228,17 @@ export default function AnalystCorePage() {
           <div className="text-xs font-mono text-slate-400 border border-white/10 px-3 py-1.5 rounded bg-[#080C14]">
             <span>Corpus: {selectedPack === 'CUSTOM' ? 'Custom Ingest' : `Pack ${selectedPack}`} ({corpus.events.length} events)</span>
           </div>
+
+          {primaryIncident && (
+            <button
+              onClick={() => setIsRawEvidenceOpen(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded font-mono text-xs font-semibold transition shadow-sm"
+              title="Inspect raw STIX 2.1, Sentinel ARM JSON, and CSV evidence"
+            >
+              <Terminal className="w-3.5 h-3.5 text-amber-400" />
+              <span>Inspect Raw Evidence</span>
+            </button>
+          )}
 
           <button
             onClick={() => executeDetection(corpus.events)}
@@ -484,7 +506,7 @@ export default function AnalystCorePage() {
             {/* Severity & Score Banner */}
             <div className="p-3 rounded border border-rose-500/30 bg-rose-950/20 flex items-center justify-between">
               <div>
-                <span className="text-slate-400 text-[10px] block uppercase">Consensus Severity Score</span>
+                <span className="text-slate-400 text-xs block uppercase">Consensus Severity Score</span>
                 <span className="text-xl font-bold text-rose-500">{primaryIncident.severityScore} / 100</span>
               </div>
               <span className="px-2.5 py-1 rounded bg-rose-600 text-white font-bold uppercase tracking-wider text-xs">
@@ -494,18 +516,18 @@ export default function AnalystCorePage() {
 
             {/* Arithmetic Formula */}
             <div className="p-2.5 rounded bg-black/60 border border-white/10">
-              <span className="text-slate-500 text-[10px] block uppercase mb-1">Consensus Formula</span>
-              <span className="text-emerald-400 font-mono text-[11px]">{primaryIncident.severityEquation}</span>
+              <span className="text-slate-300 text-xs block uppercase mb-1">Consensus Formula</span>
+              <span className="text-emerald-400 font-mono text-xs">{primaryIncident.severityEquation}</span>
             </div>
 
             {/* Contributing Detection Signals */}
             <div>
-              <h4 className="text-slate-400 uppercase text-[11px] mb-2 font-semibold">Contributing Detection Signals</h4>
+              <h4 className="text-slate-400 uppercase text-xs mb-2 font-semibold">Contributing Detection Signals</h4>
               <div className="space-y-1.5">
                 {primaryIncident.signalIds.map((sigId) => (
                   <div key={sigId} className="p-2 rounded bg-black/40 border border-white/5 flex items-center justify-between">
                     <span className="text-slate-300">{sigId}</span>
-                    <span className="text-emerald-400 font-semibold text-[10px]">CORRELATED</span>
+                    <span className="text-emerald-400 font-semibold text-xs">CORRELATED</span>
                   </div>
                 ))}
               </div>
@@ -513,7 +535,7 @@ export default function AnalystCorePage() {
 
             {/* Compromised Accounts */}
             <div>
-              <h4 className="text-slate-400 uppercase text-[11px] mb-2 font-semibold">Compromised / Pivoted Accounts</h4>
+              <h4 className="text-slate-400 uppercase text-xs mb-2 font-semibold">Compromised / Pivoted Accounts</h4>
               {primaryIncident.compromisedAccounts.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
                   {primaryIncident.compromisedAccounts.map((acc) => (
@@ -523,13 +545,13 @@ export default function AnalystCorePage() {
                   ))}
                 </div>
               ) : (
-                <span className="text-slate-500">None confirmed</span>
+                <span className="text-slate-300">None confirmed</span>
               )}
             </div>
 
             {/* Contributing IPs with PlainTooltip */}
             <div>
-              <h4 className="text-slate-400 uppercase text-[11px] mb-2 font-semibold">
+              <h4 className="text-slate-400 uppercase text-xs mb-2 font-semibold">
                 Correlated Proxy Infrastructure ({primaryIncident.contributingIps.length} IPs)
               </h4>
               <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
@@ -537,7 +559,7 @@ export default function AnalystCorePage() {
                   <div key={ip} className="p-1.5 rounded bg-black/40 border border-white/5 flex items-center justify-between">
                     <span className="text-slate-300">{ip}</span>
                     <PlainTooltip content="Flagged by Bipartite Graph Union-Find (Campaign Cluster)">
-                      <span className="text-[10px] text-amber-400 underline cursor-help">Proxy Leg</span>
+                      <span className="text-xs text-amber-400 underline cursor-help">Proxy Leg</span>
                     </PlainTooltip>
                   </div>
                 ))}
@@ -545,9 +567,14 @@ export default function AnalystCorePage() {
             </div>
           </div>
         ) : (
-          <p className="text-slate-500 text-xs font-mono">No incident data available for current scenario.</p>
+          <p className="text-slate-300 text-xs font-mono">No incident data available for current scenario.</p>
         )}
       </DetailPanel>
+      <RawEvidenceModal
+        isOpen={isRawEvidenceOpen}
+        onClose={() => setIsRawEvidenceOpen(false)}
+        incident={primaryIncident}
+      />
       <CoreNav />
     </main>
   );

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -30,12 +30,12 @@ export const QualityDashboard = () => {
               <ShieldCheck className="w-6 h-6 text-status-resolved" />
               Quality Assurance Gates
             </h2>
-            <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mt-1">
+            <p className="text-xs font-mono text-slate-300 uppercase tracking-widest mt-1">
               Verified against sealed Pack B corpus
             </p>
           </div>
           <div className="px-4 py-2 bg-surface border border-border-subtle rounded-sm">
-            <span className="text-[10px] font-mono text-slate-500 uppercase mr-2">Integrity:</span>
+            <span className="text-xs font-mono text-slate-300 uppercase mr-2">Integrity:</span>
             <span className="text-xs font-mono text-status-resolved font-bold">PASSED</span>
           </div>
         </div>
@@ -44,7 +44,7 @@ export const QualityDashboard = () => {
           {METRICS.map((m, idx) => (
             <div key={m.label} className="p-5 bg-surface border border-border-subtle rounded-sm group hover:border-border-bold transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">{m.label}</span>
+                <span className="text-xs font-mono text-slate-300 uppercase tracking-widest">{m.label}</span>
                 {m.status === 'pass' ? (
                   <CheckCircle2 className="w-3 h-3 text-status-resolved" />
                 ) : (
@@ -53,9 +53,9 @@ export const QualityDashboard = () => {
               </div>
               <div className="flex items-baseline gap-3 mb-1">
                 <span className="text-3xl font-bold font-mono text-white">{m.value}</span>
-                <span className="text-xs font-mono text-slate-500">Target: {m.target}</span>
+                <span className="text-xs font-mono text-slate-300">Target: {m.target}</span>
               </div>
-              <p className="text-[11px] font-mono text-slate-600">{m.description}</p>
+              <p className="text-xs font-mono text-slate-400">{m.description}</p>
             </div>
           ))}
         </div>

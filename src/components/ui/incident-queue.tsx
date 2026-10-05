@@ -91,29 +91,29 @@ export const IncidentQueue = ({ onSelectIncident }: { onSelectIncident: (id: str
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-severity-critical" />
-            <span className="text-xs font-mono text-slate-400 uppercase tracking-tighter">Queue Health:</span>
-            <span className="text-xs font-mono text-white font-bold">A2TP 1.5 : 1</span>
+            <span className="text-sm font-mono text-slate-200 uppercase tracking-tight">Queue Health:</span>
+            <span className="text-sm font-mono text-white font-bold">A2TP 1.5 : 1</span>
           </div>
           <div className="flex items-center gap-2 border-l border-border-subtle pl-6">
-            <Clock className="w-4 h-4 text-slate-500" />
-            <span className="text-xs font-mono text-slate-400 uppercase tracking-tighter">Active Windows:</span>
-            <span className="text-xs font-mono text-white font-bold">7 Days</span>
+            <Clock className="w-4 h-4 text-slate-400" />
+            <span className="text-sm font-mono text-slate-200 uppercase tracking-tight">Active Windows:</span>
+            <span className="text-sm font-mono text-white font-bold">7 Days</span>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
             <input
               type="text"
               placeholder="Search fingerprint..."
-              className="bg-base border border-border-subtle pl-9 pr-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-border-bold transition-colors w-64"
+              className="bg-base border border-border-subtle pl-10 pr-3 py-2 text-sm font-mono text-white focus:outline-none focus:border-border-bold transition-colors w-72"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <button className="p-2 bg-surface border border-border-subtle hover:border-border-bold transition-colors rounded-sm">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <Filter className="w-4 h-4 text-slate-300" />
           </button>
         </div>
       </div>
@@ -121,15 +121,15 @@ export const IncidentQueue = ({ onSelectIncident }: { onSelectIncident: (id: str
       {/* Data Table */}
       <div className="flex-1 overflow-auto">
         <table className="w-full text-left border-collapse font-mono">
-          <thead className="sticky top-0 bg-surface z-10 text-[10px] uppercase tracking-widest text-slate-500 border-b border-border-subtle">
+          <thead className="sticky top-0 bg-surface z-10 text-sm uppercase tracking-wider text-slate-200 font-bold border-b border-border-subtle">
             <tr>
-              <th className="px-4 py-3 font-medium">Incident ID</th>
-              <th className="px-4 py-3 font-medium">Fingerprint</th>
-              <th className="px-4 py-3 font-medium">Severity</th>
-              <th className="px-4 py-3 font-medium text-center">Quorum</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Last Seen</th>
-              <th className="px-4 py-3 font-medium text-right">Actions</th>
+              <th className="px-4 py-3.5 font-bold">Incident ID</th>
+              <th className="px-4 py-3.5 font-bold">Fingerprint</th>
+              <th className="px-4 py-3.5 font-bold">Severity</th>
+              <th className="px-4 py-3.5 font-bold text-center">Quorum</th>
+              <th className="px-4 py-3.5 font-bold">Status</th>
+              <th className="px-4 py-3.5 font-bold">Last Seen</th>
+              <th className="px-4 py-3.5 font-bold text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -143,31 +143,31 @@ export const IncidentQueue = ({ onSelectIncident }: { onSelectIncident: (id: str
                   onClick={() => onSelectIncident(incident.id)}
                   className="group cursor-pointer hover:bg-surface/50 transition-colors"
                 >
-                  <td className="px-4 py-3 text-xs font-medium text-slate-300 group-hover:text-white">
+                  <td className="px-4 py-3.5 text-base font-semibold text-white group-hover:text-white">
                     {incident.id}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-500 font-mono group-hover:text-slate-300">
+                  <td className="px-4 py-3.5 text-sm text-slate-200 font-mono group-hover:text-white">
                     {incident.fingerprint}
                   </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-sm text-[10px] font-bold border ${SEVERITY_COLORS[incident.severity]}`}>
+                  <td className="px-4 py-3.5">
+                    <span className={`px-2.5 py-1 rounded-sm text-xs font-bold border ${SEVERITY_COLORS[incident.severity]}`}>
                       {incident.severity}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center text-xs font-mono text-slate-400">
+                  <td className="px-4 py-3.5 text-center text-sm font-mono text-white font-bold">
                     {incident.quorumCount}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-                      {incident.status === 'Resolved' ? <CheckCircle2 className="w-3 h-3 text-status-resolved" /> : <AlertCircle className="w-3 h-3 text-severity-medium" />}
+                  <td className="px-4 py-3.5">
+                    <div className="flex items-center gap-1.5 text-sm text-slate-200 font-mono">
+                      {incident.status === 'Resolved' ? <CheckCircle2 className="w-4 h-4 text-status-resolved" /> : <AlertCircle className="w-4 h-4 text-severity-medium" />}
                       {incident.status}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-500 font-mono">
+                  <td className="px-4 py-3.5 text-sm text-slate-300 font-mono">
                     {incident.lastSeen}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-white">
+                  <td className="px-4 py-3.5 text-right">
+                    <button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity text-slate-300 hover:text-white">
                       <MoreHorizontal className="w-4 h-4" />
                     </button>
                   </td>
@@ -178,7 +178,7 @@ export const IncidentQueue = ({ onSelectIncident }: { onSelectIncident: (id: str
         </table>
 
         {filteredIncidents.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-600 font-mono text-sm">
+          <div className="flex flex-col items-center justify-center py-20 text-slate-400 font-mono text-sm">
             <Search className="w-8 h-8 mb-4 opacity-20" />
             <p>No incidents match your search criteria.</p>
           </div>

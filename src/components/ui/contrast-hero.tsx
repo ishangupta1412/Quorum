@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,7 +18,7 @@ const INITIAL_METRICS: Metric[] = [
     label: "Naive Volume Rule",
     value: 0,
     target: 0,
-    color: "text-slate-500",
+    color: "text-slate-300",
     description: "Standard per-IP volume thresholds",
     icon: <Activity className="w-4 h-4" />,
   },
@@ -101,7 +101,7 @@ export const ContrastHero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-slate-500 font-mono text-sm uppercase tracking-widest"
+            className="text-slate-300 font-mono text-sm uppercase tracking-widest"
           >
             Scenario: Distributed Botnet Spray <span className="text-slate-700 mx-2">|</span> 1,180 Accounts <span className="text-slate-700 mx-2">|</span> 312 IPs
           </motion.p>
@@ -127,7 +127,7 @@ export const ContrastHero = () => {
                 )}
               </AnimatePresence>
 
-              <div className="flex items-center gap-3 mb-6 text-slate-500">
+              <div className="flex items-center gap-3 mb-6 text-slate-300">
                 <span className="p-1.5 rounded-sm bg-base border border-border-subtle">
                   {metric.icon}
                 </span>
@@ -138,10 +138,10 @@ export const ContrastHero = () => {
                 <span className={`text-7xl font-bold font-mono tabular-nums transition-colors duration-500 ${metric.color}`}>
                   {metric.value}
                 </span>
-                <span className="text-slate-600 font-mono text-sm uppercase">Incidents</span>
+                <span className="text-slate-400 font-mono text-sm uppercase">Incidents</span>
               </div>
 
-              <p className="text-sm text-slate-500 font-mono leading-relaxed border-t border-border-subtle pt-4">
+              <p className="text-sm text-slate-300 font-mono leading-relaxed border-t border-border-subtle pt-4">
                 {metric.description}
               </p>
             </motion.div>
@@ -157,7 +157,7 @@ export const ContrastHero = () => {
             className={`
               px-12 py-4 font-mono text-sm uppercase tracking-widest transition-all duration-300
               ${isRunning
-                ? "bg-slate-800 text-slate-500 cursor-not-allowed border-slate-700"
+                ? "bg-slate-800 text-slate-300 cursor-not-allowed border-slate-700"
                 : "bg-white text-black hover:bg-severity-critical hover:text-white border-white"
               }
               border rounded-sm shadow-2xl
@@ -168,7 +168,7 @@ export const ContrastHero = () => {
 
           <div className="mt-8">
             <div className="px-6 py-3 bg-surface border border-border-subtle rounded-sm shadow-inner">
-              <p className="text-xs font-mono text-slate-500 flex items-center gap-3">
+              <p className="text-xs font-mono text-slate-300 flex items-center gap-3">
                 <span className="w-1 h-1 rounded-full bg-severity-critical animate-pulse" />
                 Thesis: <span className="text-slate-300 italic">&quot;Every alert needs evidence. Every incident needs independent agreement.&quot;</span>
               </p>

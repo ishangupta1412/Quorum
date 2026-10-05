@@ -73,15 +73,15 @@ export default function HomePage() {
       {/* ── NAV ─────────────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.05]"
         style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(20px)' }}>
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="font-mono font-bold text-white tracking-wider text-sm">QUORUM</span>
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <span className="font-mono font-black text-white tracking-widest text-base">QUORUM</span>
           <div className="flex items-center gap-8">
             {['#contrast', '#architecture'].map(href => (
-              <a key={href} href={href} className="text-[10px] font-mono text-slate-500 hover:text-white transition-colors tracking-widest uppercase">
+              <a key={href} href={href} className="text-sm font-mono text-slate-200 hover:text-white transition-colors tracking-widest uppercase font-semibold">
                 {href.slice(1)}
               </a>
             ))}
-            <Link href="/core" className="text-[10px] font-mono text-slate-500 hover:text-white transition-colors tracking-widest uppercase">
+            <Link href="/core" className="text-sm font-mono text-white hover:text-severity-critical transition-colors tracking-widest uppercase font-bold border border-white/10 px-3.5 py-1.5 rounded-sm bg-white/5 hover:border-severity-critical/50">
               The Core
             </Link>
           </div>
@@ -98,13 +98,13 @@ export default function HomePage() {
         >
           <motion.div variants={itemV}>
             <Link href="/core">
-              <EncryptButton text="ENTER THE CORE" variant="primary" className="px-10 py-4 text-xs" />
+              <EncryptButton text="ENTER THE CORE" variant="primary" className="px-12 py-4 text-sm font-bold tracking-wider" />
             </Link>
           </motion.div>
           <motion.a variants={itemV} href="#contrast"
-            className="text-[10px] font-mono text-slate-600 hover:text-slate-400 transition-colors tracking-widest uppercase flex items-center gap-1.5">
+            className="text-sm font-mono text-slate-200 hover:text-white transition-colors tracking-widest uppercase flex items-center gap-1.5 font-semibold">
             See the contrast
-            <ChevronRight className="w-3 h-3" />
+            <ChevronRight className="w-4 h-4" />
           </motion.a>
         </motion.div>
       </section>
@@ -113,11 +113,11 @@ export default function HomePage() {
       <section id="contrast" className="py-28 px-6 border-t border-white/[0.04]">
         <div className="max-w-6xl mx-auto">
           <div ref={contrastRef} className="reveal text-center mb-16 space-y-3">
-            <p className="text-[10px] font-mono text-slate-600 uppercase tracking-[0.2em]">The Contrast</p>
-            <h2 className="font-bold text-white" style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 'clamp(1.9rem,4.5vw,3.2rem)' }}>
+            <p className="text-sm font-mono text-slate-300 uppercase tracking-[0.2em] font-semibold">The Contrast</p>
+            <h2 className="font-bold text-white" style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 'clamp(2rem,4.8vw,3.4rem)' }}>
               Same Attack. <span style={{ color: '#DC2626' }}>Three Outcomes.</span>
             </h2>
-            <p className="text-slate-500 text-sm max-w-lg mx-auto">
+            <p className="text-slate-200 text-base max-w-xl mx-auto">
               Midnight Blizzard-style spray across 12 residential proxy IPs, 47 target accounts.
             </p>
           </div>
@@ -136,22 +136,22 @@ export default function HomePage() {
                 }}
               >
                 {c.winner && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[9px] font-mono px-3 py-0.5 rounded-sm bg-[#DC2626] text-white tracking-[0.15em] uppercase">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-mono font-bold px-3.5 py-1 rounded-sm bg-[#DC2626] text-white tracking-[0.15em] uppercase">
                     Flagship
                   </span>
                 )}
                 <div>
-                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-[0.18em] mb-1">{c.label}</p>
-                  <p className="text-[11px] text-slate-600">{c.desc}</p>
+                  <p className="text-sm font-mono text-slate-200 uppercase tracking-[0.18em] mb-1 font-bold">{c.label}</p>
+                  <p className="text-sm text-slate-300 font-medium">{c.desc}</p>
                 </div>
                 <div className="font-mono font-bold" style={{ color: c.color, fontSize: 'clamp(2.8rem,6vw,4.5rem)', lineHeight: 1 }}>
                   <Counter target={c.value} />
                 </div>
-                <div className="px-3 py-2 rounded-sm text-[11px] font-mono font-semibold"
+                <div className="px-3.5 py-2.5 rounded-sm text-sm font-mono font-bold"
                   style={{ color: c.color, background: `${c.color}14`, border: `1px solid ${c.color}30` }}>
                   {c.verdict}
                 </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed">{c.sub}</p>
+                <p className="text-sm text-slate-300 leading-relaxed">{c.sub}</p>
               </motion.div>
             ))}
           </div>
@@ -160,22 +160,22 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }} viewport={{ once: true }}
-            className="mt-10 border border-white/[0.05] bg-[#080C14] p-6 rounded-sm text-center space-y-4"
+            className="mt-10 border border-white/[0.08] bg-[#080C14] p-6 rounded-sm text-center space-y-4"
           >
-            <p className="font-mono text-[9px] text-slate-600 uppercase tracking-[0.2em]">Quorum Consensus Equation</p>
-            <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-sm">
+            <p className="font-mono text-sm text-slate-200 uppercase tracking-[0.2em] font-bold">Quorum Consensus Equation</p>
+            <div className="flex flex-wrap items-center justify-center gap-2.5 font-mono text-base">
               {[
-                { text: 'Base 100',      style: { background: 'rgba(220,38,38,0.12)', border: '1px solid rgba(220,38,38,0.2)', color: '#fff' } },
-                { text: '(Pivot)',        style: { color: '#64748B' } },
-                { text: '×',             style: { color: '#475569', fontSize: '1.2em' } },
-                { text: '1.00',          style: { background: 'rgba(245,158,11,0.1)',  border: '1px solid rgba(245,158,11,0.2)', color: '#F59E0B' } },
-                { text: '(Graph+Pivot)', style: { color: '#64748B' } },
-                { text: '+',             style: { color: '#475569' } },
-                { text: '15',            style: { background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', color: '#10B981' } },
-                { text: '→',             style: { color: '#475569' } },
+                { text: 'Base 100',      style: { background: 'rgba(220,38,38,0.14)', border: '1px solid rgba(220,38,38,0.3)', color: '#fff', fontWeight: 600 } },
+                { text: '(Pivot)',        style: { color: '#94A3B8' } },
+                { text: '×',             style: { color: '#64748B', fontSize: '1.2em' } },
+                { text: '1.00',          style: { background: 'rgba(245,158,11,0.12)',  border: '1px solid rgba(245,158,11,0.3)', color: '#F59E0B', fontWeight: 600 } },
+                { text: '(Graph+Pivot)', style: { color: '#94A3B8' } },
+                { text: '+',             style: { color: '#64748B' } },
+                { text: '15',            style: { background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', color: '#10B981', fontWeight: 600 } },
+                { text: '→',             style: { color: '#64748B' } },
                 { text: '100 [CRITICAL]', style: { color: '#DC2626', fontWeight: 700, fontSize: '1.15em', textShadow: '0 0 20px rgba(220,38,38,0.5)' } },
               ].map((t, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-sm" style={t.style}>{t.text}</span>
+                <span key={i} className="px-3 py-1.5 rounded-sm" style={t.style}>{t.text}</span>
               ))}
             </div>
           </motion.div>
@@ -186,7 +186,7 @@ export default function HomePage() {
       <section id="architecture" className="py-28 px-6 border-t border-white/[0.04]">
         <div className="max-w-6xl mx-auto">
           <div ref={archRef} className="reveal text-center mb-16 space-y-3">
-            <p className="text-[10px] font-mono text-slate-600 uppercase tracking-[0.2em]">Detection Pipeline</p>
+            <p className="text-xs font-mono text-slate-400 uppercase tracking-[0.2em]">Detection Pipeline</p>
             <h2 className="font-bold text-white" style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 'clamp(1.9rem,4.5vw,3.2rem)' }}>
               Four-Phase <span style={{ color: '#F59E0B' }}>Detection Plane</span>
             </h2>
@@ -203,8 +203,8 @@ export default function HomePage() {
                 style={{ borderColor: `${p.color}20` }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono text-slate-700 tracking-widest">{String(i + 1).padStart(2,'0')} / 04</span>
-                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-sm tracking-widest"
+                  <span className="text-xs font-mono text-slate-300 tracking-widest">{String(i + 1).padStart(2,'0')} / 04</span>
+                  <span className="text-xs font-mono px-2 py-0.5 rounded-sm tracking-widest"
                     style={{ color: p.color, background: `${p.color}14`, border: `1px solid ${p.color}28` }}>
                     {p.id}
                   </span>
@@ -212,7 +212,7 @@ export default function HomePage() {
                 <p.Icon className="w-5 h-5" style={{ color: p.color }} />
                 <div>
                   <h3 className="text-white font-semibold text-sm mb-1" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{p.label}</h3>
-                  <p className="text-slate-500 text-[11px] leading-relaxed">{p.desc}</p>
+                  <p className="text-slate-400 text-xs leading-relaxed">{p.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -225,35 +225,35 @@ export default function HomePage() {
             className="mt-10 p-6 border border-white/[0.05] bg-[#080C14] rounded-sm"
           >
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-[9px] font-mono text-slate-600 uppercase tracking-[0.18em]">Bipartite Graph</span>
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-[0.18em]">Bipartite Graph</span>
               <div className="flex-1 h-px bg-white/[0.04]" />
-              <span className="text-[9px] font-mono text-slate-700">Union-Find O(n·α(n))</span>
+              <span className="text-xs font-mono text-slate-300">Union-Find O(n·α(n))</span>
             </div>
             <div className="flex items-center justify-between gap-4 overflow-x-auto">
               <div className="space-y-1.5 shrink-0">
-                <p className="text-[9px] font-mono text-slate-600 uppercase text-center mb-2">Proxy IPs</p>
+                <p className="text-xs font-mono text-slate-400 uppercase text-center mb-2">Proxy IPs</p>
                 {['10.0.4.1','10.0.4.7','10.0.4.12','10.0.4.19','10.0.4.23'].map(ip => (
-                  <div key={ip} className="text-[10px] font-mono px-2.5 py-1 rounded-sm bg-[#DC2626]/8 border border-[#DC2626]/15 text-red-500">{ip}</div>
+                  <div key={ip} className="text-xs font-mono px-2.5 py-1 rounded-sm bg-[#DC2626]/8 border border-[#DC2626]/20 text-red-400">{ip}</div>
                 ))}
-                <div className="text-[9px] font-mono text-slate-700 text-center">+7 more</div>
+                <div className="text-xs font-mono text-slate-300 text-center">+7 more</div>
               </div>
               <div className="flex flex-col items-center gap-1 shrink-0">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="w-20 h-px" style={{ background: `linear-gradient(90deg, rgba(220,38,38,${0.3+i*0.06}), rgba(245,158,11,${0.3+i*0.06}))` }} />
                 ))}
-                <p className="text-[9px] font-mono text-slate-700 mt-1">correlation edges</p>
+                <p className="text-xs font-mono text-slate-700 mt-1">correlation edges</p>
               </div>
               <div className="space-y-1.5 shrink-0">
-                <p className="text-[9px] font-mono text-slate-600 uppercase text-center mb-2">Target Accounts</p>
+                <p className="text-xs font-mono text-slate-400 uppercase text-center mb-2">Target Accounts</p>
                 {['user_0012','user_0034','user_0067','user_0089','user_0099'].map(u => (
-                  <div key={u} className="text-[10px] font-mono px-2.5 py-1 rounded-sm bg-[#F59E0B]/8 border border-[#F59E0B]/15 text-amber-600">{u}</div>
+                  <div key={u} className="text-xs font-mono px-2.5 py-1 rounded-sm bg-[#F59E0B]/8 border border-[#F59E0B]/20 text-amber-400">{u}</div>
                 ))}
-                <div className="text-[9px] font-mono text-slate-700 text-center">+42 more</div>
+                <div className="text-xs font-mono text-slate-300 text-center">+42 more</div>
               </div>
             </div>
             <div className="mt-5 flex items-center gap-3">
               <div className="flex-1 h-px bg-white/[0.03]" />
-              <span className="text-[9px] font-mono text-slate-700 tracking-widest uppercase">Cluster: 12 IPs · 47 Accounts · 1 Incident</span>
+              <span className="text-xs font-mono text-slate-400 tracking-widest uppercase">Cluster: 12 IPs · 47 Accounts · 1 Incident</span>
               <div className="flex-1 h-px bg-white/[0.03]" />
             </div>
           </motion.div>
@@ -274,7 +274,7 @@ export default function HomePage() {
                 <div className="font-mono font-bold" style={{ color: s.color, fontSize: 'clamp(2rem,5vw,3.5rem)', lineHeight: 1 }}>
                   <Counter target={s.target} suffix={s.suffix} />
                 </div>
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest">{s.label}</p>
+                <p className="text-xs font-mono text-slate-400 uppercase tracking-widest">{s.label}</p>
               </div>
             ))}
           </div>
@@ -296,7 +296,7 @@ export default function HomePage() {
             >
               <c.Icon className="w-5 h-5" style={{ color: c.color }} />
               <h3 className="text-white text-sm font-semibold" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{c.title}</h3>
-              <p className="text-slate-500 text-[11px] leading-relaxed">{c.desc}</p>
+              <p className="text-slate-400 text-xs leading-relaxed">{c.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -321,10 +321,10 @@ export default function HomePage() {
       {/* ── FOOTER ───────────────────────────────────────────────────── */}
       <footer className="border-t border-white/[0.04] py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="font-mono text-[9px] text-slate-700 uppercase tracking-[0.18em]">Quorum — Campaign-Correlation Detection</span>
+          <span className="font-mono text-xs text-slate-300 uppercase tracking-[0.18em]">Quorum — Campaign-Correlation Detection</span>
           <div className="flex items-center gap-8">
-            <Link href="/core" className="font-mono text-[9px] text-slate-700 hover:text-white transition-colors uppercase tracking-widest">The Core</Link>
-            <a href="#architecture" className="font-mono text-[9px] text-slate-700 hover:text-white transition-colors uppercase tracking-widest">Architecture</a>
+            <Link href="/core" className="font-mono text-xs text-slate-300 hover:text-white transition-colors uppercase tracking-widest">The Core</Link>
+            <a href="#architecture" className="font-mono text-xs text-slate-300 hover:text-white transition-colors uppercase tracking-widest">Architecture</a>
           </div>
         </div>
       </footer>

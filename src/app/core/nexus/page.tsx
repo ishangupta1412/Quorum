@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CobeGlobe } from '@/components/ui/CobeGlobe';
@@ -9,6 +9,7 @@ import { ConsensusMeter } from '@/components/ui/ConsensusMeter';
 import { LiveBipartiteCanvas } from '@/components/ui/LiveBipartiteCanvas';
 import { LiveTelemetryFeed } from '@/components/ui/LiveTelemetryFeed';
 import { QuorumToastContainer, pushToast, useQuorumSound } from '@/components/ui/ToastSystem';
+import { ControlBar } from '@/components/ui/ControlBar';
 import { useLiveState } from '@/hooks/useLiveState';
 import type { LiveStateSnapshot } from '@/lib/live/state';
 import {
@@ -22,6 +23,7 @@ import {
   Shield,
   Wifi,
   WifiOff,
+  ChevronRight,
 } from 'lucide-react';
 
 const EMPTY_SNAPSHOT: LiveStateSnapshot = {
@@ -53,11 +55,11 @@ function tierColor(tier: string) {
 // ── Stat pill ────────────────────────────────────────────────────────────────
 function StatPill({ label, value, color }: { label: string; value: string | number; color?: string }) {
   return (
-    <div className="flex items-center justify-between py-1.5 border-b border-white/[0.04] last:border-0">
-      <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">{label}</span>
+    <div className="flex items-center justify-between py-2 border-b border-white/[0.06] last:border-0">
+      <span className="text-xs font-mono text-slate-300 uppercase tracking-wider font-medium">{label}</span>
       <span
-        className="text-[10px] font-mono font-bold tabular-nums"
-        style={{ color: color ?? '#CBD5E1' }}
+        className="text-xs font-mono font-bold tabular-nums"
+        style={{ color: color ?? '#FFFFFF' }}
       >
         {value}
       </span>
@@ -86,10 +88,20 @@ export default function NexusPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('globe');
   const [zooming, setZooming] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [showReasoning, setShowReasoning] = useState(false);
 
-  const prevStatusRef = useRef<string>('BASELINE');
-  const prevScoreRef  = useRef<number>(0);
+  const prevStatusRef   = useRef<string>('BASELINE');
+  const prevScoreRef    = useRef<number>(0);
+  // Suppress toasts during initial page-load hydration (first 2 s)
+  const mountedRef      = useRef(false);
+  // Spray toast fires only once per BASELINE→SPRAY transition
+  const sprayToastFired = useRef(false);
   const { playAlert } = useQuorumSound();
+
+  useEffect(() => {
+    const t = setTimeout(() => { mountedRef.current = true; }, 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   // ── Real-time state subscription (Supabase RT → HTTP poll fallback) ─────────
   const { transport, connected } = useLiveState({
@@ -102,6 +114,13 @@ export default function NexusPage() {
         const oldStatus = prevStatusRef.current;
         const oldScore  = prevScoreRef.current;
 
+        // Suppress all toasts during initial hydration window
+        if (!mountedRef.current) {
+          prevStatusRef.current = newStatus;
+          prevScoreRef.current  = newScore;
+          return merged;
+        }
+
         if (newStatus === 'PIVOT' && oldStatus !== 'PIVOT') {
           playAlert('CRITICAL');
           pushToast({
@@ -112,7 +131,9 @@ export default function NexusPage() {
               : 'Pivot actor detected',
             equation: merged.reasoning,
           });
-        } else if (newStatus === 'SPRAY' && oldStatus === 'BASELINE') {
+          sprayToastFired.current = false; // reset for next spray cycle
+        } else if (newStatus === 'SPRAY' && oldStatus === 'BASELINE' && !sprayToastFired.current) {
+          sprayToastFired.current = true;
           playAlert('HIGH');
           pushToast({
             severity: 'HIGH',
@@ -120,7 +141,7 @@ export default function NexusPage() {
             detail: `${merged.clusters.length} cluster(s) · ${merged.stats.uniqueIps} unique IPs → ${merged.stats.uniqueUsers} accounts`,
             equation: merged.reasoning,
           });
-        } else if (newScore >= 80 && oldScore < 80) {
+        } else if (newScore >= 80 && oldScore < 80 && newStatus !== 'PIVOT') {
           playAlert('HIGH');
           pushToast({
             severity: 'HIGH',
@@ -128,7 +149,7 @@ export default function NexusPage() {
             detail: `Score escalated to ${newScore} — ${merged.severityTier}`,
             equation: merged.reasoning,
           });
-        } else if (newScore >= 50 && oldScore < 50) {
+        } else if (newScore >= 50 && oldScore < 50 && newStatus === 'SPRAY') {
           playAlert('MEDIUM');
           pushToast({
             severity: 'MEDIUM',
@@ -179,13 +200,14 @@ export default function NexusPage() {
   };
 
   const color = tierColor(snapshot.severityTier);
-  const isThreat = snapshot.status !== 'BASELINE';
+  // Crimson Pulse is PIVOT-only — not during SPRAY
+  const isThreat = snapshot.status === 'PIVOT';
   const eventsPerMin = snapshot.totalEventsProcessed
     ? Math.round((snapshot.stats.total / Math.max(1, snapshot.totalEventsProcessed)) * 60)
     : 0;
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+    <div className="min-h-screen bg-black text-white overflow-hidden relative pl-[72px]">
       {/* Global toast overlay */}
       <QuorumToastContainer />
 
@@ -205,34 +227,34 @@ export default function NexusPage() {
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header
-        className="relative z-10 border-b border-white/[0.05] px-6 h-14 flex items-center justify-between"
-        style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(20px)' }}
+        className="relative z-10 border-b border-white/[0.08] px-6 h-14 flex items-center justify-between"
+        style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(20px)' }}
       >
         <div className="flex items-center gap-3">
           <Radio className="w-4 h-4 text-[#DC2626] animate-pulse" />
-          <span className="font-mono font-bold text-white tracking-wider text-sm">QUORUM</span>
-          <span className="text-[9px] font-mono text-slate-600 border border-white/[0.06] px-2 py-0.5 rounded-sm uppercase tracking-widest">
+          <span className="font-mono font-bold text-white tracking-wider text-base">QUORUM</span>
+          <span className="text-xs font-mono font-semibold text-slate-200 border border-white/[0.12] px-2.5 py-0.5 rounded uppercase tracking-wider">
             Nexus — God View
           </span>
           {/* Live badge */}
           <div className="flex items-center gap-1.5 ml-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
-            <span className="text-[9px] font-mono text-[#DC2626] tracking-widest uppercase">Live</span>
+            <div className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
+            <span className="text-xs font-mono text-[#EF4444] font-bold tracking-widest uppercase">Live</span>
           </div>
           {/* Transport indicator */}
           <div
-            className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm border"
+            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded border"
             style={{
-              borderColor: transport === 'realtime' ? 'rgba(16,185,129,0.3)' : 'rgba(245,158,11,0.25)',
-              background:  transport === 'realtime' ? 'rgba(16,185,129,0.06)' : 'rgba(245,158,11,0.06)',
+              borderColor: transport === 'realtime' ? 'rgba(16,185,129,0.4)' : 'rgba(245,158,11,0.35)',
+              background:  transport === 'realtime' ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)',
             }}
           >
             {transport === 'realtime'
-              ? <Wifi className="w-2.5 h-2.5 text-[#10B981]" />
-              : <WifiOff className="w-2.5 h-2.5 text-[#F59E0B]" />
+              ? <Wifi className="w-3 h-3 text-[#10B981]" />
+              : <WifiOff className="w-3 h-3 text-[#F59E0B]" />
             }
             <span
-              className="text-[8px] font-mono tracking-widest uppercase font-bold"
+              className="text-xs font-mono tracking-wider uppercase font-bold"
               style={{ color: transport === 'realtime' ? '#10B981' : '#F59E0B' }}
             >
               {transport === 'connecting' ? 'connecting…' : transport}
@@ -244,7 +266,7 @@ export default function NexusPage() {
         <div className="flex items-center gap-3">
           {/* View switcher */}
           <div
-            className="flex items-center gap-0 border border-white/[0.06] rounded-sm overflow-hidden"
+            className="flex items-center gap-0 border border-white/[0.1] rounded overflow-hidden bg-white/[0.02]"
           >
             {([
               { id: 'globe', Icon: Activity, label: 'Globe' },
@@ -254,13 +276,13 @@ export default function NexusPage() {
               <button
                 key={id}
                 onClick={() => setViewMode(id)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-mono uppercase tracking-widest transition-all duration-150"
+                className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider font-semibold transition-all duration-150"
                 style={{
-                  color: viewMode === id ? '#fff' : '#475569',
-                  background: viewMode === id ? 'rgba(255,255,255,0.06)' : 'transparent',
+                  color: viewMode === id ? '#FFFFFF' : '#CBD5E1',
+                  background: viewMode === id ? 'rgba(255,255,255,0.12)' : 'transparent',
                 }}
               >
-                <Icon className="w-3 h-3" />
+                <Icon className="w-3.5 h-3.5" />
                 {label}
               </button>
             ))}
@@ -270,9 +292,9 @@ export default function NexusPage() {
           <button
             onClick={handleReset}
             disabled={resetting}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-mono uppercase tracking-widest text-slate-600 hover:text-slate-300 border border-white/[0.05] rounded-sm hover:border-white/[0.1] transition-all disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider font-semibold text-slate-300 hover:text-white border border-white/[0.1] rounded hover:border-white/[0.25] transition-all disabled:opacity-40 hover:bg-white/[0.04]"
           >
-            <RotateCcw className={`w-3 h-3 ${resetting ? 'animate-spin' : ''}`} />
+            <RotateCcw className={`w-3.5 h-3.5 ${resetting ? 'animate-spin' : ''}`} />
             Reset
           </button>
         </div>
@@ -319,7 +341,7 @@ export default function NexusPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.5 }}
-                  className="absolute bottom-12 left-1/2 -translate-x-1/2 text-[10px] font-mono text-slate-700 tracking-widest uppercase"
+                  className="absolute bottom-12 left-1/2 -translate-x-1/2 text-xs font-mono text-slate-200 font-semibold tracking-wider uppercase bg-black/70 px-4 py-1.5 rounded border border-white/10 shadow-lg backdrop-blur-sm"
                 >
                   Click globe to drill into active campaign
                 </motion.p>
@@ -337,25 +359,25 @@ export default function NexusPage() {
                 className="flex-1 relative"
               >
                 <div className="absolute inset-0 p-4">
-                  <div className="h-full border border-white/[0.05] rounded-sm overflow-hidden bg-black/40">
-                    <div className="px-4 py-2 border-b border-white/[0.05] flex items-center justify-between">
+                  <div className="h-full border border-white/[0.08] rounded overflow-hidden bg-black/40">
+                    <div className="px-4 py-2.5 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
                       <div className="flex items-center gap-2">
-                        <Network className="w-3.5 h-3.5 text-slate-600" />
-                        <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">
+                        <Network className="w-4 h-4 text-slate-300" />
+                        <span className="text-xs font-mono text-slate-200 uppercase tracking-wider font-bold">
                           Live Bipartite Graph
                         </span>
                       </div>
-                      <div className="flex items-center gap-3 text-[8px] font-mono text-slate-700">
-                        <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-[#EF4444] inline-block opacity-70" />
+                      <div className="flex items-center gap-4 text-xs font-mono text-slate-300 font-medium">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444] inline-block opacity-85" />
                           Spray
                         </span>
-                        <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-[#DC2626] inline-block" />
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] inline-block shadow-sm" />
                           Pivot
                         </span>
-                        <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-[#64748B] inline-block opacity-50" />
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#64748B] inline-block opacity-75" />
                           Normal
                         </span>
                       </div>
@@ -403,12 +425,12 @@ export default function NexusPage() {
           initial={{ x: 60, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="w-72 border-l border-white/[0.05] flex flex-col overflow-y-auto"
-          style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(16px)' }}
+          className="w-80 border-l border-white/[0.08] flex flex-col overflow-y-auto"
+          style={{ background: 'rgba(8,12,20,0.92)', backdropFilter: 'blur(20px)' }}
         >
           {/* ── Consensus Meter ─────────────────────────────────────────────── */}
-          <div className="p-4 border-b border-white/[0.05]">
-            <p className="text-[9px] font-mono text-slate-700 uppercase tracking-[0.18em] mb-3">
+          <div className="p-4 border-b border-white/[0.08]">
+            <p className="text-xs font-mono font-bold text-slate-200 uppercase tracking-[0.18em] mb-3">
               Consensus Score
             </p>
             <ConsensusMeter
@@ -420,8 +442,8 @@ export default function NexusPage() {
           </div>
 
           {/* ── Live Stats ──────────────────────────────────────────────────── */}
-          <div className="p-4 border-b border-white/[0.05]">
-            <p className="text-[9px] font-mono text-slate-700 uppercase tracking-[0.18em] mb-2">
+          <div className="p-4 border-b border-white/[0.08]">
+            <p className="text-xs font-mono font-bold text-slate-200 uppercase tracking-[0.18em] mb-2">
               Live Statistics
             </p>
             <div className="space-y-0">
@@ -443,19 +465,58 @@ export default function NexusPage() {
             </div>
           </div>
 
+          {/* ── Detection Reasoning ─────────────────────────────────────── */}
+          <div className="p-4 border-b border-white/[0.08]">
+            <button
+              onClick={() => setShowReasoning((v) => !v)}
+              className="flex items-center justify-between w-full group py-0.5"
+            >
+              <p className="text-xs font-mono font-bold text-slate-200 uppercase tracking-[0.18em]">
+                Detection Logic
+              </p>
+              <ChevronRight
+                className="w-4 h-4 text-slate-400 group-hover:text-white transition-transform duration-200"
+                style={{ transform: showReasoning ? 'rotate(90deg)' : 'rotate(0deg)' }}
+              />
+            </button>
+            <AnimatePresence>
+              {showReasoning && (
+                <motion.div
+                  key="reasoning"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="overflow-hidden"
+                >
+                  <div
+                    className="mt-2.5 p-3 rounded border border-white/[0.1] bg-black/50"
+                  >
+                    <p
+                      className="text-xs font-mono leading-relaxed break-words font-medium"
+                      style={{ color: color === '#64748B' ? '#CBD5E1' : color }}
+                    >
+                      {snapshot.reasoning || 'No reasoning available yet.'}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           {/* ── Active Clusters ─────────────────────────────────────────────── */}
-          <div className="p-4 border-b border-white/[0.05] flex-1">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[9px] font-mono text-slate-700 uppercase tracking-[0.18em]">
+          <div className="p-4 border-b border-white/[0.08] flex-1">
+            <div className="flex items-center justify-between mb-2.5">
+              <p className="text-xs font-mono font-bold text-slate-200 uppercase tracking-[0.18em]">
                 Active Clusters
               </p>
               {snapshot.clusters.length > 0 && (
                 <span
-                  className="text-[8px] font-mono px-1.5 py-0.5 rounded-sm"
+                  className="text-xs font-mono px-2 py-0.5 rounded font-bold"
                   style={{
                     color,
-                    background: `${color}18`,
-                    border: `1px solid ${color}30`,
+                    background: `${color}25`,
+                    border: `1px solid ${color}50`,
                   }}
                 >
                   {snapshot.clusters.length}
@@ -465,8 +526,8 @@ export default function NexusPage() {
 
             {snapshot.clusters.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 gap-2">
-                <Shield className="w-6 h-6 text-slate-800" />
-                <p className="text-[9px] font-mono text-slate-700">No clusters detected</p>
+                <Shield className="w-7 h-7 text-slate-700" />
+                <p className="text-xs font-mono text-slate-400 font-medium">No clusters detected</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -482,36 +543,36 @@ export default function NexusPage() {
                         exit={{ opacity: 0, x: 16 }}
                         transition={{ delay: i * 0.05 }}
                         onClick={handleDrillIn}
-                        className="w-full text-left p-2.5 rounded-sm border border-white/[0.05] bg-[#080C14] hover:border-white/[0.1] hover:bg-[#0D1220] transition-all group"
+                        className="w-full text-left p-3 rounded border border-white/[0.08] bg-[#080C14] hover:border-white/[0.2] hover:bg-[#0D1220] transition-all group"
                       >
-                        <div className="flex items-start justify-between mb-1.5">
+                        <div className="flex items-start justify-between mb-2">
                           <div>
-                            <p className="text-[10px] font-mono font-bold text-white">
+                            <p className="text-xs font-mono font-bold text-white">
                               C-{String(c.clusterId).padStart(3, '0')}
                             </p>
-                            <p className="text-[8px] font-mono text-slate-600">
+                            <p className="text-xs font-mono text-slate-300 font-medium mt-0.5">
                               {c.ipCount} IPs → {c.accountCount} accounts
                             </p>
                           </div>
                           <span
-                            className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm font-bold"
-                            style={{ color: clColor, background: `${clColor}18`, border: `1px solid ${clColor}30` }}
+                            className="text-xs font-mono px-2 py-0.5 rounded font-bold"
+                            style={{ color: clColor, background: `${clColor}22`, border: `1px solid ${clColor}45` }}
                           >
                             {c.totalEvents}ev
                           </span>
                         </div>
 
                         {/* Score bar */}
-                        <div className="h-0.5 bg-white/[0.05] rounded-full overflow-hidden">
+                        <div className="h-1 bg-white/[0.08] rounded-full overflow-hidden">
                           <motion.div
                             className="h-full rounded-full"
                             style={{ background: clColor, width: `${Math.min(100, (c.ipCount / 20) * 100)}%` }}
                           />
                         </div>
 
-                        <div className="mt-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Zap className="w-2.5 h-2.5 text-[#DC2626]" />
-                          <span className="text-[8px] font-mono text-[#DC2626]">Drill into Analysis →</span>
+                        <div className="mt-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Zap className="w-3 h-3 text-[#EF4444]" />
+                          <span className="text-xs font-mono text-[#EF4444] font-bold">Drill into Analysis →</span>
                         </div>
                       </motion.button>
                     );
@@ -526,28 +587,42 @@ export default function NexusPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 border-t border-[#DC2626]/25"
-              style={{ background: 'rgba(220,38,38,0.05)' }}
+              className="p-4 border-t border-[#DC2626]/35"
+              style={{ background: 'rgba(220,38,38,0.08)' }}
             >
               <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
-                <span className="text-[9px] font-mono text-[#DC2626] uppercase tracking-[0.15em] font-bold">
-                  Last Pivot
+                <AlertTriangle className="w-4 h-4 text-[#EF4444]" />
+                <span className="text-xs font-mono text-[#EF4444] uppercase tracking-wider font-bold">
+                  Last Pivot Confirmed
                 </span>
               </div>
-              <p className="text-[10px] font-mono text-white font-semibold">
+              <p className="text-sm font-mono text-white font-bold">
                 {snapshot.lastPivot.userName}
               </p>
-              <p className="text-[9px] font-mono text-slate-500">
+              <p className="text-xs font-mono text-slate-300 font-medium mt-0.5">
                 from {snapshot.lastPivot.srcIp}
               </p>
-              <p className="text-[8px] font-mono text-slate-700 mt-0.5">
+              <p className="text-xs font-mono text-slate-400 mt-1">
                 {new Date(snapshot.lastPivot.timestamp).toLocaleTimeString('en-US', { hour12: false })}
               </p>
             </motion.div>
           )}
         </motion.aside>
       </main>
+
+      {/* ── Scenario Control Bar ─────────────────────────────────────────── */}
+      <ControlBar
+        currentMode={snapshot.status}
+        onModeChange={(mode) => {
+          if (mode === 'RESET') {
+            setSnapshot(EMPTY_SNAPSHOT);
+            prevStatusRef.current = 'BASELINE';
+            prevScoreRef.current  = 0;
+            sprayToastFired.current = false;
+            pushToast({ severity: 'INFO', title: 'Engine Reset', detail: 'State cleared — ready for fresh demo.' });
+          }
+        }}
+      />
 
       <CoreNav />
     </div>

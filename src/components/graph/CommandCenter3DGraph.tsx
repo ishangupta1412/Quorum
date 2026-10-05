@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
@@ -416,11 +416,11 @@ export function CommandCenter3DGraph({
       <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
         <div className="flex items-center gap-2 px-3 py-1 bg-surface/80 border border-white/10 backdrop-blur-md rounded-sm">
           <span className="w-2 h-2 rounded-full bg-severity-critical animate-ping" />
-          <span className="font-mono text-[11px] font-bold text-white tracking-widest uppercase">
+          <span className="font-mono text-xs font-bold text-white tracking-widest uppercase">
             3D ATTACK TOPOLOGY
           </span>
         </div>
-        <span className="font-mono text-[10px] text-slate-500">
+        <span className="font-mono text-xs text-slate-300">
           Nodes: {nodesRef.current.size} | Mode: {topologyMode.toUpperCase()}
         </span>
       </div>
@@ -434,7 +434,7 @@ export function CommandCenter3DGraph({
               e.stopPropagation();
               setTopologyMode(mode);
             }}
-            className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-all duration-150 rounded-sm ${
+            className={`px-2.5 py-1 font-mono text-xs uppercase tracking-wider transition-all duration-150 rounded-sm ${
               topologyMode === mode
                 ? 'bg-white text-black font-bold shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -448,7 +448,7 @@ export function CommandCenter3DGraph({
             e.stopPropagation();
             setIsRotating(!isRotating);
           }}
-          className="px-2 py-1 font-mono text-[10px] text-slate-400 hover:text-white hover:bg-white/5 border-l border-white/10"
+          className="px-2 py-1 font-mono text-xs text-slate-400 hover:text-white hover:bg-white/5 border-l border-white/10"
           title="Toggle Rotation"
         >
           {isRotating ? 'PAUSE' : 'ORBIT'}
@@ -460,14 +460,14 @@ export function CommandCenter3DGraph({
         <div className="absolute bottom-4 left-4 z-10 p-3 bg-surface/90 border border-severity-critical/40 backdrop-blur-md rounded-sm flex items-center gap-4">
           <div className="w-2 h-8 bg-severity-critical rounded-full" />
           <div>
-            <div className="font-mono text-[9px] text-slate-400 uppercase tracking-widest">
+            <div className="font-mono text-xs text-slate-400 uppercase tracking-widest">
               Inspecting Entity
             </div>
             <div className="font-mono text-xs font-bold text-white tracking-wide">
               {hoveredNode}
             </div>
           </div>
-          <span className="font-mono text-[10px] text-severity-critical font-bold px-2 py-0.5 border border-severity-critical/30 bg-severity-critical/10 rounded-sm">
+          <span className="font-mono text-xs text-severity-critical font-bold px-2 py-0.5 border border-severity-critical/30 bg-severity-critical/10 rounded-sm">
             CLICK TO LOCK TARGET
           </span>
         </div>

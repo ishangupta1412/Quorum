@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -46,14 +46,14 @@ export const AuditLedgerViewer = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={simulateTamper}
-            className="px-3 py-1.5 text-[10px] font-mono border border-border-subtle text-slate-500 hover:text-severity-high hover:border-severity-high transition-all rounded-sm"
+            className="px-3 py-1.5 text-xs font-mono border border-border-subtle text-slate-300 hover:text-severity-high hover:border-severity-high transition-all rounded-sm"
           >
             Simulate Tamper
           </button>
           <button
             onClick={verifyChain}
             disabled={isVerifying}
-            className="px-3 py-1.5 text-[10px] font-mono bg-white text-black hover:bg-severity-critical hover:text-white transition-all rounded-sm font-bold"
+            className="px-3 py-1.5 text-xs font-mono bg-white text-black hover:bg-severity-critical hover:text-white transition-all rounded-sm font-bold"
           >
             {isVerifying ? "Verifying..." : "Verify Chain"}
           </button>
@@ -62,7 +62,7 @@ export const AuditLedgerViewer = () => {
 
       <div className="overflow-hidden rounded-sm border border-border-subtle">
         <table className="w-full text-left font-mono text-xs">
-          <thead className="bg-base text-slate-500 uppercase tracking-tighter text-[10px]">
+          <thead className="bg-base text-slate-300 uppercase tracking-tighter text-xs">
             <tr>
               <th className="px-4 py-2 border-r border-border-subtle">ID</th>
               <th className="px-4 py-2 border-r border-border-subtle">Timestamp</th>
@@ -75,18 +75,18 @@ export const AuditLedgerViewer = () => {
           <tbody className="divide-y divide-border-subtle">
             {ledger.map((row) => (
               <tr key={row.id} className={`group ${row.status === 'tampered' ? 'bg-severity-critical/10' : 'bg-surface'}`}>
-                <td className="px-4 py-2 text-slate-500">{row.id}</td>
+                <td className="px-4 py-2 text-slate-300">{row.id}</td>
                 <td className="px-4 py-2 text-slate-300">{row.ts}</td>
                 <td className="px-4 py-2 text-slate-300">{row.actor}</td>
                 <td className="px-4 py-2 text-slate-400">{row.action}</td>
-                <td className="px-4 py-2 text-slate-500 font-mono text-[10px]">{row.rowHash}</td>
+                <td className="px-4 py-2 text-slate-300 font-mono text-xs">{row.rowHash}</td>
                 <td className="px-4 py-2">
                   {row.status === 'verified' ? (
-                    <span className="flex items-center gap-1 text-status-resolved text-[10px] font-bold">
+                    <span className="flex items-center gap-1 text-status-resolved text-xs font-bold">
                       <CheckCircle2 className="w-3 h-3" /> Verified
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-severity-critical text-[10px] font-bold animate-pulse">
+                    <span className="flex items-center gap-1 text-severity-critical text-xs font-bold animate-pulse">
                       <AlertTriangle className="w-3 h-3" /> Tampered
                     </span>
                   )}

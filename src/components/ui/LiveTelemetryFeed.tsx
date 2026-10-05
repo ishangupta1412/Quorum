@@ -51,22 +51,22 @@ export function LiveTelemetryFeed({ events, maxVisible = 40, className }: Props)
   return (
     <div className={`flex flex-col overflow-hidden ${className ?? ''}`}>
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.05] flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.08] flex-shrink-0 bg-white/[0.02]">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-          <span className="text-[9px] font-mono text-slate-500 uppercase tracking-[0.15em]">
+          <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+          <span className="text-sm font-mono text-white font-bold uppercase tracking-[0.12em]">
             Live Telemetry Feed
           </span>
         </div>
-        <span className="text-[9px] font-mono text-slate-700">
+        <span className="text-xs font-mono text-slate-300 font-semibold">
           {events.length} events
         </span>
       </div>
 
       {/* Column headers */}
-      <div className="grid grid-cols-[72px_110px_130px_64px] gap-x-2 px-3 py-1.5 border-b border-white/[0.04] flex-shrink-0">
+      <div className="grid grid-cols-[95px_140px_150px_75px] gap-x-2 px-4 py-2.5 border-b border-white/[0.08] flex-shrink-0 bg-black/60">
         {['TIME', 'SRC IP', 'ACCOUNT', 'OUTCOME'].map((h) => (
-          <span key={h} className="text-[8px] font-mono text-slate-700 uppercase tracking-widest">
+          <span key={h} className="text-sm font-mono text-slate-200 font-bold uppercase tracking-wider">
             {h}
           </span>
         ))}
@@ -89,19 +89,19 @@ export function LiveTelemetryFeed({ events, maxVisible = 40, className }: Props)
                 initial={isNew ? { opacity: 0, y: -6 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.18 }}
-                className="grid grid-cols-[72px_110px_130px_64px] gap-x-2 px-3 py-[5px] border-b border-white/[0.025] hover:bg-white/[0.02] transition-colors"
+                className="grid grid-cols-[95px_140px_150px_75px] gap-x-2 px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.06] transition-colors items-center"
               >
-                <span className="text-[9px] font-mono text-slate-600 tabular-nums">
+                <span className="text-sm font-mono text-slate-300 font-medium tabular-nums">
                   {timeFmt(e.timestamp)}
                 </span>
-                <span className="text-[9px] font-mono text-slate-400 truncate">
+                <span className="text-sm font-mono text-slate-100 font-medium truncate">
                   {ipAnon(e.srcIp)}
                 </span>
-                <span className="text-[9px] font-mono text-slate-400 truncate">
+                <span className="text-sm font-mono text-white font-bold truncate">
                   {e.userName}
                 </span>
                 <span
-                  className="text-[9px] font-mono font-bold tracking-wider"
+                  className="text-sm font-mono font-bold tracking-wider"
                   style={{ color }}
                 >
                   {e.eventOutcome === 'SUCCESS' ? 'OK' : 'FAIL'}
@@ -112,8 +112,8 @@ export function LiveTelemetryFeed({ events, maxVisible = 40, className }: Props)
         </AnimatePresence>
 
         {visible.length === 0 && (
-          <div className="flex items-center justify-center h-24">
-            <span className="text-[10px] font-mono text-slate-700">
+          <div className="flex items-center justify-center h-28">
+            <span className="text-sm font-mono text-slate-400 font-medium">
               Awaiting telemetry stream…
             </span>
           </div>

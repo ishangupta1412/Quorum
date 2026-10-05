@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { AuditLedger, AuditVerificationResult } from '@/lib/crypto/audit-ledger';
@@ -43,7 +43,7 @@ export function AuditLedgerViewer({
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
               Cryptographic Audit Ledger (SHA-256 Hash Chain)
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-400">
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/10 text-slate-400">
                 Tamper Evident
               </span>
             </h3>
@@ -109,7 +109,7 @@ export function AuditLedgerViewer({
             <AlertTriangle className="w-4 h-4 text-rose-400" />
             CRITICAL EVIDENCE CORRUPTION ALERT:
           </div>
-          <p className="text-[11px] text-slate-300">
+          <p className="text-xs text-slate-300">
             {auditStatus.errorDetails || 'Block signature validation failed. A row was mutated directly in PostgreSQL without updating the SHA-256 hash digest.'}
           </p>
         </div>
@@ -117,7 +117,7 @@ export function AuditLedgerViewer({
 
       {/* Visual Hash Chain Blocks */}
       <div className="space-y-2">
-        <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+        <div className="text-xs font-mono text-slate-300 uppercase tracking-wider">
           Chain Blocks (Click any block to inspect cryptographic payload)
         </div>
 
@@ -138,27 +138,27 @@ export function AuditLedgerViewer({
                       : 'border-white/10 bg-[#04070C] hover:border-white/25'
                 }`}
               >
-                <div className="flex items-center justify-between text-[11px] font-mono mb-1.5">
+                <div className="flex items-center justify-between text-xs font-mono mb-1.5">
                   <span className="font-bold text-white">Block #{rec.sequenceId}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${isTampered ? 'bg-rose-500 text-white font-bold' : 'bg-white/10 text-slate-400'}`}>
+                  <span className={`text-xs px-1.5 py-0.5 rounded ${isTampered ? 'bg-rose-500 text-white font-bold' : 'bg-white/10 text-slate-400'}`}>
                     {rec.actionType}
                   </span>
                 </div>
 
-                <div className="text-[10px] font-mono text-slate-400 space-y-1">
+                <div className="text-xs font-mono text-slate-400 space-y-1">
                   <div>
-                    <span className="text-slate-600 block">ACTOR:</span>
+                    <span className="text-slate-400 block">ACTOR:</span>
                     <span className="text-slate-300">{rec.actorId}</span>
                   </div>
                   <div>
-                    <span className="text-slate-600 block">SHA-256 RECORD HASH:</span>
+                    <span className="text-slate-400 block">SHA-256 RECORD HASH:</span>
                     <span className={`block truncate ${isTampered ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>
                       {rec.recordHash.slice(0, 16)}...
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-600 block">PREV HASH:</span>
-                    <span className="block truncate text-slate-500">
+                    <span className="text-slate-400 block">PREV HASH:</span>
+                    <span className="block truncate text-slate-300">
                       {rec.prevRecordHash.slice(0, 16)}...
                     </span>
                   </div>
@@ -185,29 +185,29 @@ export function AuditLedgerViewer({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <span className="text-slate-500 block">TIMESTAMP:</span>
+              <span className="text-slate-300 block">TIMESTAMP:</span>
               <span className="text-slate-200">{selectedRecord.timestamp}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">ACTOR ID:</span>
+              <span className="text-slate-300 block">ACTOR ID:</span>
               <span className="text-slate-200">{selectedRecord.actorId}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">TARGET ENTITY:</span>
+              <span className="text-slate-300 block">TARGET ENTITY:</span>
               <span className="text-slate-200">{selectedRecord.targetEntityType} ({selectedRecord.targetEntityId})</span>
             </div>
             <div>
-              <span className="text-slate-500 block">PAYLOAD HASH (SHA-256):</span>
+              <span className="text-slate-300 block">PAYLOAD HASH (SHA-256):</span>
               <span className="text-slate-300 break-all">{selectedRecord.payloadHash}</span>
             </div>
             <div className="sm:col-span-2">
-              <span className="text-slate-500 block">PREVIOUS RECORD HASH:</span>
+              <span className="text-slate-300 block">PREVIOUS RECORD HASH:</span>
               <span className="text-slate-400 break-all">{selectedRecord.prevRecordHash}</span>
             </div>
             <div className="sm:col-span-2">
-              <span className="text-slate-500 block">CURRENT BLOCK RECORD HASH (COMMITTED):</span>
+              <span className="text-slate-300 block">CURRENT BLOCK RECORD HASH (COMMITTED):</span>
               <span className="text-emerald-400 font-bold break-all">{selectedRecord.recordHash}</span>
             </div>
           </div>

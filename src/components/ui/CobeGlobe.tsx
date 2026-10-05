@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useEffect, useRef } from 'react';
 import createGlobe from 'cobe';
 
@@ -105,7 +105,7 @@ export function CobeGlobe({ markers = ATTACK_MARKERS, arcs = ATTACK_ARCS, classN
         }}
       />
       {/* Attack arcs overlay label */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-mono text-slate-600 tracking-widest uppercase pointer-events-none">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs font-mono text-slate-400 tracking-widest uppercase pointer-events-none">
         {arcs.length} attack vectors active
       </div>
     </div>

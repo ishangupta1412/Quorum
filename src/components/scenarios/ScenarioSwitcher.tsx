@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { generateSyntheticCorpus } from '@/data/generator';
@@ -100,7 +100,7 @@ export function ScenarioSwitcher({
             Telemetry Corpus & Attack Scenario Selector
           </span>
         </div>
-        <span className="text-[11px] font-mono text-slate-400">
+        <span className="text-xs font-mono text-slate-400">
           Loaded Corpus: <strong className="text-white">{totalEvents} events</strong>
         </span>
       </div>
@@ -120,7 +120,7 @@ export function ScenarioSwitcher({
             <span className="font-bold text-rose-400">Pack B (Flagship)</span>
             {currentPack === 'B' && <Check className="w-3.5 h-3.5 text-rose-400" />}
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Midnight Blizzard spray (12 IPs / 35 accounts) + post-spray pivot breach on user_0001.
           </p>
         </button>
@@ -138,7 +138,7 @@ export function ScenarioSwitcher({
             <span className="font-bold text-emerald-400">Pack A (Baseline)</span>
             {currentPack === 'A' && <Check className="w-3.5 h-3.5 text-emerald-400" />}
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             100% benign enterprise traffic. Verifies ZERO false positives on Quorum engine.
           </p>
         </button>
@@ -156,7 +156,7 @@ export function ScenarioSwitcher({
             <span className="font-bold text-amber-400">Pack C (Multi-Vector)</span>
             {currentPack === 'C' && <Check className="w-3.5 h-3.5 text-amber-400" />}
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Loud single-IP brute force decoy running simultaneously with a covert stealth spray.
           </p>
         </button>
@@ -177,7 +177,7 @@ export function ScenarioSwitcher({
             </span>
             {currentPack === 'CUSTOM' && <Check className="w-3.5 h-3.5 text-cyan-400" />}
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Paste raw VPN auth JSON / CSV to test detection on your own live infrastructure logs.
           </p>
         </button>
@@ -200,7 +200,7 @@ export function ScenarioSwitcher({
 ]`}
             className="w-full bg-black border border-white/10 rounded p-2 text-slate-200 placeholder:text-slate-700 text-xs font-mono focus:outline-none focus:border-cyan-500/50"
           />
-          {customError && <p className="text-rose-400 text-[11px]">{customError}</p>}
+          {customError && <p className="text-rose-400 text-xs">{customError}</p>}
           <div className="flex justify-end gap-2">
             <button
               onClick={() => setIsCustomOpen(false)}

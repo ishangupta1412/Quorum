@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -70,7 +70,7 @@ const CyberMatrixHero = () => {
       {/* Content */}
       <div className="relative z-10 text-center px-6">
         <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible"
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-black/60 backdrop-blur-md text-[10px] font-mono text-slate-500 tracking-widest uppercase mb-8">
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-black/60 backdrop-blur-md text-xs font-mono text-slate-300 tracking-widest uppercase mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
           Campaign-Correlation Detection Active
         </motion.div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -33,7 +33,7 @@ export const VerdictStaging = ({ incidentId, onConfirm }: { incidentId: string, 
             className={`flex items-center justify-between p-3 text-left border transition-all duration-200 rounded-sm font-mono text-xs ${
               selectedVerdict === key
                 ? "bg-white/5 border-white text-white"
-                : "bg-base border-border-subtle text-slate-500 hover:border-border-bold"
+                : "bg-base border-border-subtle text-slate-300 hover:border-border-bold"
             }`}
           >
             <span className={selectedVerdict === key ? val.color : ""}>{val.label}</span>
@@ -43,7 +43,7 @@ export const VerdictStaging = ({ incidentId, onConfirm }: { incidentId: string, 
       </div>
 
       <div className="mb-6">
-        <label className="text-[10px] font-mono text-slate-500 uppercase block mb-2">Justification Note (Mandatory)</label>
+        <label className="text-xs font-mono text-slate-300 uppercase block mb-2">Justification Note (Mandatory)</label>
         <textarea
           className="w-full bg-base border border-border-subtle p-3 text-xs font-mono text-white focus:outline-none focus:border-border-bold rounded-sm h-24"
           placeholder="Enter reason for this verdict..."
@@ -60,7 +60,7 @@ export const VerdictStaging = ({ incidentId, onConfirm }: { incidentId: string, 
         Stage Verdict
       </button>
 
-      <p className="text-center text-[9px] font-mono text-slate-600 mt-4 italic">
+      <p className="text-center text-xs font-mono text-slate-400 mt-4 italic">
         &quot;staged for human execution — Quorum never auto-enforces&quot;
       </p>
     </div>

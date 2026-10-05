@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AuthEvent } from '@/types/auth-event';
@@ -234,7 +234,7 @@ export function AttackTimeline({
             onChange={handleSeek}
             className="w-full accent-rose-600 bg-slate-800 h-1.5 rounded-lg appearance-none cursor-pointer"
           />
-          <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
+          <div className="flex justify-between text-xs font-mono text-slate-300 mt-1">
             <span>T = 0.0h (Start)</span>
             {sprayStartTimeMs && (
               <span className="text-amber-400 cursor-pointer hover:underline" onClick={jumpToSpray}>
@@ -277,7 +277,7 @@ export function AttackTimeline({
               <button
                 key={s}
                 onClick={() => setPlaybackSpeed(s)}
-                className={`px-2 py-0.5 rounded transition ${playbackSpeed === s ? 'bg-white/20 text-white font-bold' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`px-2 py-0.5 rounded transition ${playbackSpeed === s ? 'bg-white/20 text-white font-bold' : 'text-slate-300 hover:text-slate-300'}`}
               >
                 {s}x
               </button>

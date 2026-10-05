@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { liveSession } from '@/lib/live/state';
 import { getSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import type { SimulationStateRow } from '@/lib/supabase/database.types';
@@ -10,8 +10,7 @@ export async function GET() {
   try {
     if (isSupabaseConfigured()) {
       const supabase = getSupabaseServerClient();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any)
+            const { data, error } = await (supabase as any)
         .from('simulation_state')
         .select('*')
         .eq('id', 'demo-singleton')
@@ -94,8 +93,7 @@ export async function POST(req: Request) {
         updated_at:      new Date().toISOString(),
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+            const { error } = await (supabase as any)
         .from('simulation_state')
         .upsert(resetRow, { onConflict: 'id' });
 

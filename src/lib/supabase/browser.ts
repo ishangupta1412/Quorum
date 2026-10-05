@@ -26,7 +26,7 @@ declare global {
 
 export function getSupabaseBrowserClient() {
   if (!url || !anon) return null;
-  if (typeof window === 'undefined') return null; // SSR guard
+  if (typeof globalThis === 'undefined' || !('window' in globalThis)) return null; // SSR guard
 
   if (!globalThis.__quorumSupabaseBrowser) {
     globalThis.__quorumSupabaseBrowser = createClient<Database>(url, anon, {

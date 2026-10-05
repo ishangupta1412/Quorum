@@ -6,6 +6,7 @@ import { exportToSentinel, SentinelIncidentPayload } from '@/lib/export/sentinel
 import { exportToStix21 } from '@/lib/export/stix';
 import { exportIncidentsToCsv } from '@/lib/export/csv';
 import { Send, CheckCircle2, ShieldCheck, Download, Code, ExternalLink, RefreshCw } from 'lucide-react';
+import { soundEngine } from '@/lib/sound/audio-cues';
 
 interface SentinelDispatcherProps {
   incident: Incident | null;
@@ -34,6 +35,7 @@ export function SentinelDispatcher({ incident, onDispatched }: SentinelDispatche
 
       const data = await res.json();
       if (data.success && data.receipt) {
+        soundEngine.playDispatchSound();
         setLastReceipt(data.receipt);
         if (onDispatched) onDispatched(data.receipt);
       }
@@ -61,7 +63,7 @@ export function SentinelDispatcher({ incident, onDispatched }: SentinelDispatche
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             Microsoft Sentinel & SOAR Automated Dispatch
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-cyan-400">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/10 text-cyan-400">
               REST / ARM
             </span>
           </h3>
@@ -95,9 +97,9 @@ export function SentinelDispatcher({ incident, onDispatched }: SentinelDispatche
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               SENTINEL WEBHOOK RECEIPT CONFIRMED
             </span>
-            <span className="text-[10px] text-emerald-400">{lastReceipt.timestamp}</span>
+            <span className="text-xs text-emerald-400">{lastReceipt.timestamp}</span>
           </div>
-          <div className="text-[11px] text-slate-300 grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1">
+          <div className="text-xs text-slate-300 grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1">
             <div>RECEIPT ID: <span className="text-white font-bold">{lastReceipt.receiptId}</span></div>
             <div>STATUS: <span className="text-emerald-400 font-bold">{lastReceipt.status}</span></div>
             <div>SIGNATURE: <span className="text-slate-400 truncate block">{lastReceipt.signature}</span></div>
@@ -154,7 +156,7 @@ export function SentinelDispatcher({ incident, onDispatched }: SentinelDispatche
         </div>
 
         {/* Code Preview Box */}
-        <pre className="p-3.5 rounded-lg border border-white/5 bg-black text-[11px] font-mono text-slate-300 max-h-56 overflow-y-auto overflow-x-auto leading-relaxed">
+        <pre className="p-3.5 rounded-lg border border-white/5 bg-black text-xs font-mono text-slate-300 max-h-56 overflow-y-auto overflow-x-auto leading-relaxed">
           {previewTab === 'sentinel' && JSON.stringify(sentinelPayload, null, 2)}
           {previewTab === 'stix' && JSON.stringify(stixBundle, null, 2)}
           {previewTab === 'csv' && csvData}

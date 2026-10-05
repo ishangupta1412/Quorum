@@ -4,7 +4,10 @@ import { motion } from 'framer-motion';
 import { CoreNav } from '@/components/ui/CoreNav';
 import { EncryptButton } from '@/components/ui/EncryptButton';
 import { AnimatedStateIcon, type IncidentState } from '@/components/ui/AnimatedStateIcons';
-import { Shield, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Shield, CheckCircle2, ChevronRight, Terminal } from 'lucide-react';
+import { RawEvidenceModal } from '@/components/ui/RawEvidenceModal';
+import { soundEngine } from '@/lib/sound/audio-cues';
+import { Incident } from '@/types/auth-event';
 
 /* ── Deterministic synthetic data ───────────────────────────────────── */
 const EVIDENCE_ROWS = [
@@ -71,7 +74,7 @@ function FailureSpikeChart() {
       {/* X labels */}
       <div className="flex justify-between mt-1 px-0.5">
         {['22:00','22:15','22:30','22:45','23:00'].map(t => (
-          <span key={t} className="text-[8px] font-mono text-slate-700">{t}</span>
+          <span key={t} className="text-xs font-mono text-slate-700">{t}</span>
         ))}
       </div>
     </div>
@@ -99,19 +102,19 @@ function ConsensusGauge({ score, families }: { score: number; families: typeof F
 
       {/* Score */}
       <div className="text-center">
-        <p className="font-mono font-bold text-2xl" style={{ color: '#DC2626', textShadow: '0 0 20px rgba(220,38,38,0.5)' }}>{score}</p>
-        <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">score</p>
+        <p className="font-mono font-bold text-3xl" style={{ color: '#DC2626', textShadow: '0 0 20px rgba(220,38,38,0.5)' }}>{score}</p>
+        <p className="text-xs font-mono text-slate-400 font-bold uppercase tracking-wider mt-0.5">score</p>
       </div>
 
       {/* Family agreement */}
-      <div className="w-full space-y-2">
+      <div className="w-full space-y-2.5">
         {families.map(f => (
           <div key={f.id} className="space-y-1">
-            <div className="flex justify-between">
-              <span className="text-[9px] font-mono text-slate-600 truncate">{f.label}</span>
-              <span className="text-[9px] font-mono font-bold" style={{ color: f.color }}>{f.score}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-mono text-slate-300 font-medium truncate">{f.label}</span>
+              <span className="text-xs font-mono font-bold" style={{ color: f.color }}>{f.score}</span>
             </div>
-            <div className="h-0.5 bg-white/[0.04] rounded-full overflow-hidden">
+            <div className="h-1 bg-white/[0.08] rounded-full overflow-hidden">
               <motion.div className="h-full rounded-full" style={{ background: f.color }}
                 initial={{ width: 0 }} animate={{ width: `${f.score}%` }}
                 transition={{ duration: 0.9, delay: 0.5 }} />
@@ -123,13 +126,32 @@ function ConsensusGauge({ score, families }: { score: number; families: typeof F
   );
 }
 
+const ANALYSIS_INCIDENT: Incident = {
+  id: 'INC-2026-F10',
+  title: 'Distributed Password Spray with Account Pivot',
+  severityScore: 100,
+  severityTier: 'CRITICAL',
+  severityEquation: 'Base 100 (F10_pivot) × 1.00 (GRAPH+PIVOT) + 15 -> 100 [CRITICAL]',
+  familiesPresent: ['GRAPH', 'PIVOT'],
+  signalIds: ['sig_graph_f7', 'sig_pivot_f10'],
+  contributingIps: ['10.0.4.1', '10.0.4.7', '10.0.4.12', '10.0.4.19', '10.0.4.23'],
+  targetedAccounts: ['user_0034', 'user_0012', 'user_0067', 'user_0089', 'user_0099'],
+  compromisedAccounts: ['user_0034'],
+  status: 'OPEN',
+  createdAt: '2026-10-03T23:58:01Z',
+};
+
 /* ═══════════════════════════════════════════════════════════════════════ */
 export default function AnalysisPage() {
   const [pivotFlash, setPivotFlash] = useState(false);
+  const [isRawModalOpen, setIsRawModalOpen] = useState(false);
 
-  // Simulate pivot detection trigger
+  // Simulate pivot detection trigger + procedural audio cue
   useEffect(() => {
-    const timer = setTimeout(() => setPivotFlash(true), 2200);
+    const timer = setTimeout(() => {
+      setPivotFlash(true);
+      soundEngine.playPivotChime();
+    }, 2200);
     const reset = setTimeout(() => setPivotFlash(false), 4000);
     return () => { clearTimeout(timer); clearTimeout(reset); };
   }, []);
@@ -138,7 +160,7 @@ export default function AnalysisPage() {
   const cardV = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden pb-20 relative">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden pb-20 relative pl-[72px]">
       {/* Pivot flash overlay */}
       {pivotFlash && (
         <motion.div
@@ -151,18 +173,18 @@ export default function AnalysisPage() {
       )}
 
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-white/[0.05] px-6 h-14 flex items-center justify-between"
+      <header className="sticky top-0 z-20 border-b border-white/[0.08] px-6 h-14 flex items-center justify-between"
         style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(16px)' }}>
         <div className="flex items-center gap-3">
           <Shield className="w-4 h-4 text-[#DC2626]" />
-          <span className="font-mono font-bold text-white tracking-wider text-sm">QUORUM</span>
-          <span className="text-[9px] font-mono text-slate-600 border border-white/[0.06] px-2 py-0.5 rounded-sm uppercase tracking-widest">Analysis — Tactical Triage</span>
+          <span className="font-mono font-bold text-white tracking-wider text-base">QUORUM</span>
+          <span className="text-xs font-mono font-semibold text-slate-200 border border-white/[0.12] px-2.5 py-0.5 rounded uppercase tracking-wider">Analysis — Tactical Triage</span>
         </div>
         {pivotFlash && (
           <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-[#DC2626]/40 bg-[#DC2626]/10">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
-            <span className="text-[10px] font-mono text-[#DC2626] font-bold tracking-widest uppercase">Pivot Detected</span>
+            className="flex items-center gap-2 px-3 py-1.5 rounded border border-[#DC2626]/40 bg-[#DC2626]/15">
+            <div className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
+            <span className="text-xs font-mono text-[#DC2626] font-bold tracking-wider uppercase">Pivot Detected</span>
           </motion.div>
         )}
       </header>
@@ -173,7 +195,7 @@ export default function AnalysisPage() {
 
           {/* ── A: Severity equation ─── col-span 12 */}
           <motion.div variants={cardV} className="col-span-12 p-4 rounded-sm border border-white/[0.06] bg-[#080C14] flex flex-wrap items-center gap-2">
-            <p className="text-[9px] font-mono text-slate-600 uppercase tracking-[0.18em] mr-2">Consensus Equation</p>
+            <p className="text-xs font-mono text-slate-400 uppercase tracking-[0.18em] mr-2">Consensus Equation</p>
             {[
               { text: 'Base 100',      s: { background:'rgba(220,38,38,0.12)', border:'1px solid rgba(220,38,38,0.2)', color:'#fff' } },
               { text: '(Pivot)',       s: { color:'#64748B' } },
@@ -189,7 +211,7 @@ export default function AnalysisPage() {
             ))}
             <div className="ml-auto flex items-center gap-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
-              <span className="text-[10px] font-mono text-[#10B981] tracking-widest">VERIFIED</span>
+              <span className="text-xs font-mono text-[#10B981] tracking-widest">VERIFIED</span>
             </div>
           </motion.div>
 
@@ -197,12 +219,12 @@ export default function AnalysisPage() {
           <motion.div variants={cardV} className="col-span-12 lg:col-span-8 p-5 rounded-sm border border-white/[0.06] bg-[#080C14]">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-[9px] font-mono text-slate-600 uppercase tracking-[0.18em]">Auth Failure Rate</p>
+                <p className="text-xs font-mono text-slate-400 uppercase tracking-[0.18em]">Auth Failure Rate</p>
                 <p className="text-sm font-semibold text-white mt-0.5" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Campaign Window: 2026-10-03 22:00–23:00</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-0.5 rounded bg-[#DC2626]" style={{ boxShadow: '0 0 6px rgba(220,38,38,0.8)' }} />
-                <span className="text-[9px] font-mono text-slate-600">Failure/min</span>
+                <span className="text-xs font-mono text-slate-400">Failure/min</span>
               </div>
             </div>
             <FailureSpikeChart />
@@ -210,7 +232,7 @@ export default function AnalysisPage() {
 
           {/* ── C: Consensus Gauge ──── col-span 4 */}
           <motion.div variants={cardV} className="col-span-12 lg:col-span-4 p-5 rounded-sm border border-white/[0.06] bg-[#080C14]">
-            <p className="text-[9px] font-mono text-slate-600 uppercase tracking-[0.18em] mb-4">Consensus Meter</p>
+            <p className="text-xs font-mono text-slate-400 uppercase tracking-[0.18em] mb-4">Consensus Meter</p>
             <ConsensusGauge score={100} families={FAMILIES} />
           </motion.div>
 
@@ -218,10 +240,24 @@ export default function AnalysisPage() {
           <motion.div variants={cardV} className="col-span-12 p-5 rounded-sm border border-white/[0.06] bg-[#080C14]">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-[9px] font-mono text-slate-600 uppercase tracking-[0.18em]">Evidence Stream</p>
+                <p className="text-xs font-mono text-slate-400 uppercase tracking-[0.18em]">Evidence Stream</p>
                 <p className="text-sm font-semibold text-white mt-0.5" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{EVIDENCE_ROWS.length} events correlated</p>
               </div>
-              <EncryptButton text="EXPORT STIX" variant="ghost" className="text-[10px] py-2 px-4" showIcon={false} />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsRawModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300 hover:text-white transition-colors"
+                >
+                  <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Inspect Evidence</span>
+                </button>
+                <button
+                  onClick={() => setIsRawModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#DC2626]/20 hover:bg-[#DC2626]/30 border border-[#DC2626]/40 text-xs font-mono text-white transition-colors font-semibold"
+                >
+                  <span>EXPORT STIX 2.1</span>
+                </button>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -229,7 +265,7 @@ export default function AnalysisPage() {
                 <thead>
                   <tr className="border-b border-white/[0.05]">
                     {['State','ID','Source IP','Account','Event','Timestamp','Action'].map(h => (
-                      <th key={h} className="text-left pb-2 text-[9px] font-mono text-slate-600 uppercase tracking-[0.15em] pr-6 whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left pb-2 text-xs font-mono text-slate-400 uppercase tracking-[0.15em] pr-6 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -248,26 +284,26 @@ export default function AnalysisPage() {
                           <AnimatedStateIcon state={row.state} showLabel />
                         </td>
                         <td className="py-2.5 pr-6">
-                          <span className="text-[10px] font-mono text-slate-500">{row.id}</span>
+                          <span className="text-xs font-mono text-slate-300">{row.id}</span>
                         </td>
                         <td className="py-2.5 pr-6">
-                          <span className="text-[11px] font-mono text-[#EF4444]">{row.ip}</span>
+                          <span className="text-xs font-mono text-[#EF4444]">{row.ip}</span>
                         </td>
                         <td className="py-2.5 pr-6">
-                          <span className="text-[11px] font-mono text-amber-600">{row.user}</span>
+                          <span className="text-xs font-mono text-amber-600">{row.user}</span>
                         </td>
                         <td className="py-2.5 pr-6">
-                          <span className={`text-[10px] font-mono font-bold ${isPivot ? 'text-[#DC2626]' : 'text-slate-400'}`}>
+                          <span className={`text-xs font-mono font-bold ${isPivot ? 'text-[#DC2626]' : 'text-slate-400'}`}>
                             {row.event}
-                            {isPivot && <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded-sm bg-[#DC2626]/20 border border-[#DC2626]/30 text-[#DC2626]">PIVOT</span>}
+                            {isPivot && <span className="ml-2 text-xs px-1.5 py-0.5 rounded-sm bg-[#DC2626]/20 border border-[#DC2626]/30 text-[#DC2626]">PIVOT</span>}
                           </span>
                         </td>
                         <td className="py-2.5 pr-6">
-                          <span className="text-[10px] font-mono text-slate-600">{row.ts.replace('T',' ').replace('Z','')}</span>
+                          <span className="text-xs font-mono text-slate-400">{row.ts.replace('T',' ').replace('Z','')}</span>
                         </td>
                         <td className="py-2.5">
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                            <EncryptButton text="INSPECT" variant="ghost" className="text-[9px] py-1 px-3" showIcon={false} />
+                            <EncryptButton text="INSPECT" variant="ghost" className="text-xs py-1 px-3" showIcon={false} />
                           </div>
                         </td>
                       </motion.tr>
@@ -288,7 +324,7 @@ export default function AnalysisPage() {
             ].map(s => (
               <div key={s.label} className="p-4 rounded-sm border border-white/[0.05] bg-[#080C14] text-center">
                 <p className="font-mono font-bold text-xl" style={{ color: s.color }}>{s.value}</p>
-                <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mt-1">{s.label}</p>
+                <p className="text-xs font-mono text-slate-400 uppercase tracking-widest mt-1">{s.label}</p>
               </div>
             ))}
           </motion.div>
@@ -296,7 +332,7 @@ export default function AnalysisPage() {
           {/* ── F: Drill to Forensics ─ */}
           <motion.div variants={cardV} className="col-span-12 flex justify-end">
             <a href="/core/forensics"
-              className="flex items-center gap-2 text-[10px] font-mono text-slate-600 hover:text-white transition-colors tracking-widest uppercase border border-white/[0.05] hover:border-white/[0.12] px-4 py-2.5 rounded-sm bg-[#080C14]">
+              className="flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-white transition-colors tracking-widest uppercase border border-white/[0.05] hover:border-white/[0.12] px-4 py-2.5 rounded-sm bg-[#080C14]">
               Drill into Forensics
               <ChevronRight className="w-3.5 h-3.5" />
             </a>
@@ -305,6 +341,11 @@ export default function AnalysisPage() {
         </motion.div>
       </div>
 
+      <RawEvidenceModal
+        isOpen={isRawModalOpen}
+        onClose={() => setIsRawModalOpen(false)}
+        incident={ANALYSIS_INCIDENT}
+      />
       <CoreNav />
     </div>
   );

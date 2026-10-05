@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo } from 'react';
 import { AuthEvent, Incident } from '@/types/auth-event';
@@ -199,7 +199,7 @@ export function BipartiteGraph({ events, incident, selectedTimeMs }: BipartiteGr
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
               Bipartite Campaign Graph Canvas
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
                 Union-Find Clustering
               </span>
             </h3>
@@ -240,7 +240,7 @@ export function BipartiteGraph({ events, incident, selectedTimeMs }: BipartiteGr
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="text-[11px] font-mono text-slate-300 px-1">
+            <span className="text-xs font-mono text-slate-300 px-1">
               {Math.round(zoomLevel * 100)}%
             </span>
             <button
@@ -264,19 +264,19 @@ export function BipartiteGraph({ events, incident, selectedTimeMs }: BipartiteGr
       {/* Graph Metrics Ribbon */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
         <div className="p-2.5 rounded border border-white/5 bg-[#04070C]">
-          <span className="text-slate-400 block text-[10px]">GRAPH DENSITY RATIO</span>
+          <span className="text-slate-400 block text-xs">GRAPH DENSITY RATIO</span>
           <span className="text-slate-200 font-bold text-sm">{metrics.densityRatio}</span>
         </div>
         <div className="p-2.5 rounded border border-white/5 bg-[#04070C]">
-          <span className="text-slate-400 block text-[10px]">RESIDENTIAL PROXIES (IPs)</span>
+          <span className="text-slate-400 block text-xs">RESIDENTIAL PROXIES (IPs)</span>
           <span className="text-rose-400 font-bold text-sm">{metrics.totalIps} nodes</span>
         </div>
         <div className="p-2.5 rounded border border-white/5 bg-[#04070C]">
-          <span className="text-slate-400 block text-[10px]">DIRECTORY IDENTITIES</span>
+          <span className="text-slate-400 block text-xs">DIRECTORY IDENTITIES</span>
           <span className="text-slate-200 font-bold text-sm">{metrics.totalUsers} targets</span>
         </div>
         <div className="p-2.5 rounded border border-white/5 bg-[#04070C]">
-          <span className="text-slate-400 block text-[10px]">BIPARTITE ATTEMPT EDGES</span>
+          <span className="text-slate-400 block text-xs">BIPARTITE ATTEMPT EDGES</span>
           <span className="text-amber-400 font-bold text-sm">{metrics.totalEdges} edges</span>
         </div>
       </div>
@@ -479,9 +479,9 @@ export function BipartiteGraph({ events, incident, selectedTimeMs }: BipartiteGr
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-[11px]">
+            <div className="grid grid-cols-2 gap-2 text-xs">
               <div>
-                <span className="text-slate-500 block">STATUS</span>
+                <span className="text-slate-300 block">STATUS</span>
                 <span className={selectedNode.isCompromisedUser || selectedNode.isPivotIp ? 'text-rose-400 font-bold' : selectedNode.isSprayIp ? 'text-amber-400' : 'text-slate-300'}>
                   {selectedNode.isCompromisedUser
                     ? 'COMPROMISED'
@@ -493,15 +493,15 @@ export function BipartiteGraph({ events, incident, selectedTimeMs }: BipartiteGr
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block">DEGREE CENTRALITY</span>
+                <span className="text-slate-300 block">DEGREE CENTRALITY</span>
                 <span className="text-slate-200">{selectedNode.degree} links</span>
               </div>
               <div>
-                <span className="text-slate-500 block">AUTH FAILURES</span>
+                <span className="text-slate-300 block">AUTH FAILURES</span>
                 <span className="text-rose-400 font-semibold">{selectedNode.failureCount}</span>
               </div>
               <div>
-                <span className="text-slate-500 block">AUTH SUCCESSES</span>
+                <span className="text-slate-300 block">AUTH SUCCESSES</span>
                 <span className={selectedNode.successCount > 0 ? 'text-emerald-400 font-bold' : 'text-slate-400'}>
                   {selectedNode.successCount}
                 </span>

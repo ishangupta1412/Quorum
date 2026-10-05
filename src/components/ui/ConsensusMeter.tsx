@@ -144,13 +144,13 @@ export function ConsensusMeter({ score, tier, equation, status, className }: Pro
         {/* Centre readout */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <motion.span
-            className="text-3xl font-bold font-mono tabular-nums"
+            className="text-4xl font-extrabold font-mono tabular-nums"
             style={{ color, fontFamily: 'JetBrains Mono, monospace' }}
           >
             {Math.round(score)}
           </motion.span>
           <span
-            className="text-[9px] font-mono tracking-[0.2em] uppercase mt-0.5"
+            className="text-xs font-mono font-bold tracking-[0.2em] uppercase mt-1"
             style={{ color }}
           >
             {tier}
@@ -160,11 +160,11 @@ export function ConsensusMeter({ score, tier, equation, status, className }: Pro
 
       {/* Status badge */}
       <div
-        className="px-3 py-1 rounded-sm text-[9px] font-mono font-bold tracking-[0.15em] uppercase"
+        className="px-3.5 py-1.5 rounded text-xs font-mono font-bold tracking-[0.18em] uppercase shadow-sm"
         style={{
           color,
-          background: `${color}14`,
-          border: `1px solid ${color}40`,
+          background: `${color}18`,
+          border: `1.5px solid ${color}55`,
         }}
       >
         {STATUS_LABEL[status] ?? status}
@@ -173,11 +173,11 @@ export function ConsensusMeter({ score, tier, equation, status, className }: Pro
       {/* Equation */}
       {equation && (
         <div
-          className="w-full px-3 py-2 rounded-sm text-[9px] font-mono leading-relaxed text-center"
+          className="w-full px-3 py-2 rounded text-xs font-mono leading-relaxed text-center font-medium"
           style={{
-            background: 'rgba(0,0,0,0.5)',
-            border: '1px solid rgba(255,255,255,0.05)',
-            color: 'rgba(255,255,255,0.45)',
+            background: 'rgba(0,0,0,0.65)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: '#E2E8F0',
           }}
         >
           {equation}

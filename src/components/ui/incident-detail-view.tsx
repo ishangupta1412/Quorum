@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { CommandCenter3DGraph } from '../graph/CommandCenter3DGraph';
 import { AuthEvent, Incident } from '@/types/auth-event';
+import { RawEvidenceModal } from './RawEvidenceModal';
 
 interface EventEvidence {
   hash: string;
@@ -116,6 +117,7 @@ export const IncidentDetailView = ({
   const [activeTab, setActiveTab] = useState<'3d' | 'telemetry' | 'mitre'>('3d');
   const [isStagingVerdict, setIsStagingVerdict] = useState(false);
   const [verdictStaged, setVerdictStaged] = useState(false);
+  const [isRawModalOpen, setIsRawModalOpen] = useState(false);
 
   const activeIncident = incident ?? MOCK_INCIDENT;
 
@@ -149,7 +151,7 @@ export const IncidentDetailView = ({
           <div className="flex items-center gap-3">
             <motion.div
               layoutId={`incident-badge-${incidentId}`}
-              className="px-2.5 py-0.5 rounded-sm text-[10px] font-mono font-bold tracking-widest border border-severity-critical/60 bg-severity-critical/15 text-severity-critical flex items-center gap-1.5"
+              className="px-2.5 py-0.5 rounded-sm text-xs font-mono font-bold tracking-widest border border-severity-critical/60 bg-severity-critical/15 text-severity-critical flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-severity-critical animate-ping" />
               {activeIncident.severityTier}
@@ -159,7 +161,7 @@ export const IncidentDetailView = ({
               {incidentId}
             </h1>
 
-            <span className="text-slate-600 font-mono text-xs">/</span>
+            <span className="text-slate-400 font-mono text-xs">/</span>
 
             <span className="text-xs font-mono text-slate-400">
               {activeIncident.title}
@@ -168,7 +170,7 @@ export const IncidentDetailView = ({
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-4 px-3 py-1 bg-black/40 border border-white/5 rounded-sm text-[11px] font-mono text-slate-400">
+          <div className="hidden md:flex items-center gap-4 px-3 py-1 bg-black/40 border border-white/5 rounded-sm text-xs font-mono text-slate-400">
             <span>MTTD: <strong className="text-white">2.68 min</strong></span>
             <span className="text-slate-700">|</span>
             <span>Cluster: <strong className="text-amber-400">3 Families</strong></span>
@@ -208,11 +210,11 @@ export const IncidentDetailView = ({
           {/* Section: Severity Arithmetic Breakdown */}
           <section className="p-4 bg-black/60 border border-white/[0.08] rounded-sm">
             <div className="flex items-center justify-between mb-3">
-              <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="font-mono text-xs text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Cpu className="w-3 h-3 text-severity-critical" />
                 Consensus Arithmetic
               </span>
-              <span className="font-mono text-[10px] text-severity-critical font-bold">
+              <span className="font-mono text-xs text-severity-critical font-bold">
                 SCORE {activeIncident.severityScore}
               </span>
             </div>
@@ -223,15 +225,15 @@ export const IncidentDetailView = ({
 
             <div className="grid grid-cols-3 gap-2 text-center font-mono">
               <div className="p-2 bg-white/[0.02] border border-white/5 rounded-sm">
-                <div className="text-[9px] text-slate-500">BASE</div>
+                <div className="text-xs text-slate-300">BASE</div>
                 <div className="text-xs font-bold text-white">100</div>
               </div>
               <div className="p-2 bg-white/[0.02] border border-white/5 rounded-sm">
-                <div className="text-[9px] text-slate-500">MULTIPLIER</div>
+                <div className="text-xs text-slate-300">MULTIPLIER</div>
                 <div className="text-xs font-bold text-amber-400">1.00x</div>
               </div>
               <div className="p-2 bg-white/[0.02] border border-white/5 rounded-sm">
-                <div className="text-[9px] text-slate-500">PIVOT BONUS</div>
+                <div className="text-xs text-slate-300">PIVOT BONUS</div>
                 <div className="text-xs font-bold text-severity-critical">+15</div>
               </div>
             </div>
@@ -239,7 +241,7 @@ export const IncidentDetailView = ({
 
           {/* Section: Participating Detector Families */}
           <section className="p-4 bg-black/60 border border-white/[0.08] rounded-sm">
-            <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3">
+            <span className="font-mono text-xs text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3">
               <Layers className="w-3 h-3 text-sky-400" />
               Independent Signals Present
             </span>
@@ -252,11 +254,11 @@ export const IncidentDetailView = ({
               ].map((sig) => (
                 <div key={sig.name} className="p-2.5 bg-black/40 border border-white/5 rounded-sm flex items-center justify-between">
                   <div>
-                    <div className="font-mono text-[11px] font-bold text-white">{sig.name}</div>
-                    <div className="font-mono text-[9px] text-slate-500">{sig.desc}</div>
+                    <div className="font-mono text-xs font-bold text-white">{sig.name}</div>
+                    <div className="font-mono text-xs text-slate-300">{sig.desc}</div>
                   </div>
                   <span
-                    className="font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-sm"
+                    className="font-mono text-xs font-bold px-1.5 py-0.5 rounded-sm"
                     style={{ color: sig.color, background: `${sig.color}15`, border: `1px solid ${sig.color}30` }}
                   >
                     {sig.status}
@@ -269,18 +271,18 @@ export const IncidentDetailView = ({
           {/* Section: Cryptographic Audit Ledger Seal */}
           <section className="p-4 bg-black/60 border border-white/[0.08] rounded-sm mt-auto">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="font-mono text-xs text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Lock className="w-3 h-3 text-status-resolved" />
                 Ledger Chain Integrity
               </span>
-              <span className="font-mono text-[9px] text-status-resolved font-bold flex items-center gap-1">
+              <span className="font-mono text-xs text-status-resolved font-bold flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" /> VERIFIED
               </span>
             </div>
-            <p className="font-mono text-[10px] text-slate-500 leading-relaxed mb-2">
+            <p className="font-mono text-xs text-slate-300 leading-relaxed mb-2">
               SHA-256 genesis anchor intact. Tamper detection verified across all state transitions.
             </p>
-            <div className="font-mono text-[9px] text-slate-400 bg-black p-2 border border-white/5 rounded-sm truncate">
+            <div className="font-mono text-xs text-slate-400 bg-black p-2 border border-white/5 rounded-sm truncate">
               Head: 8f2a41d9e205c8b74a...
             </div>
           </section>
@@ -299,7 +301,7 @@ export const IncidentDetailView = ({
 
           {/* Bottom Telemetry Ticker */}
           <div className="h-10 bg-[#080C14]/90 border-t border-white/[0.08] px-4 flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-3 text-slate-400 text-[11px]">
+            <div className="flex items-center gap-3 text-slate-400 text-xs">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-severity-critical" />
                 Compromised: <strong className="text-white">admin_corp</strong>
@@ -312,7 +314,7 @@ export const IncidentDetailView = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-slate-500 uppercase tracking-widest">
+              <span className="text-xs text-slate-300 uppercase tracking-widest">
                 FPS: 60 | WebGL: ACTIVE
               </span>
             </div>
@@ -324,11 +326,11 @@ export const IncidentDetailView = ({
           {/* Section: Forensic Evidence Timeline */}
           <section className="p-4 bg-black/60 border border-white/[0.08] rounded-sm flex-1 flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="font-mono text-xs text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Clock className="w-3 h-3 text-slate-400" />
                 Forensic Sequence (4 Events)
               </span>
-              <span className="font-mono text-[9px] text-slate-600">CHRONO</span>
+              <span className="font-mono text-xs text-slate-400">CHRONO</span>
             </div>
 
             <div className="space-y-2.5 overflow-y-auto pr-1">
@@ -344,11 +346,11 @@ export const IncidentDetailView = ({
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="font-mono text-[9px] text-slate-500">
+                      <span className="font-mono text-xs text-slate-300">
                         STEP {idx + 1} · {ev.timestamp.slice(11, 19)} UTC
                       </span>
                       <span
-                        className={`font-mono text-[9px] font-bold px-1.5 py-0.2 rounded-sm ${
+                        className={`font-mono text-xs font-bold px-1.5 py-0.2 rounded-sm ${
                           isPivot
                             ? 'bg-severity-critical text-white'
                             : 'bg-white/5 text-slate-400'
@@ -362,9 +364,9 @@ export const IncidentDetailView = ({
                       {ev.user}
                     </div>
 
-                    <div className="flex items-center justify-between mt-1 text-[10px] font-mono text-slate-400">
+                    <div className="flex items-center justify-between mt-1 text-xs font-mono text-slate-400">
                       <span>{ev.ip}</span>
-                      <span className="text-slate-600">{ev.hash}</span>
+                      <span className="text-slate-400">{ev.hash}</span>
                     </div>
                   </div>
                 );
@@ -374,18 +376,18 @@ export const IncidentDetailView = ({
 
           {/* Section: MITRE ATT&CK Mapping */}
           <section className="p-4 bg-black/60 border border-white/[0.08] rounded-sm">
-            <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3">
+            <span className="font-mono text-xs text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3">
               <Fingerprint className="w-3 h-3 text-amber-500" />
               MITRE ATT&CK Matrix
             </span>
 
             <div className="space-y-2 font-mono text-xs">
               <div className="p-2 bg-black/40 border border-white/5 rounded-sm">
-                <div className="text-[10px] text-slate-500">T1110.003</div>
+                <div className="text-xs text-slate-300">T1110.003</div>
                 <div className="text-white font-bold">Password Spraying</div>
               </div>
               <div className="p-2 bg-black/40 border border-white/5 rounded-sm">
-                <div className="text-[10px] text-slate-500">T1078.004</div>
+                <div className="text-xs text-slate-300">T1078.004</div>
                 <div className="text-white font-bold">Valid Cloud/VPN Accounts</div>
               </div>
             </div>
@@ -393,30 +395,46 @@ export const IncidentDetailView = ({
 
           {/* Section: Sovereign Export Deck */}
           <section className="p-4 bg-black/60 border border-white/[0.08] rounded-sm">
-            <span className="font-mono text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3">
+            <span className="font-mono text-xs text-slate-400 uppercase tracking-widest flex items-center gap-1.5 mb-3">
               <Download className="w-3 h-3 text-slate-400" />
               Intelligence Bundle Export
             </span>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
               <button
-                onClick={() => window.open(`/api/v1/export/stix?incidentId=${incidentId}`, '_blank')}
-                className="py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm font-mono text-[10px] text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
+                onClick={() => setIsRawModalOpen(true)}
+                className="w-full py-2.5 px-3 bg-[#DC2626]/20 hover:bg-[#DC2626]/30 border border-[#DC2626]/40 rounded-sm font-mono text-xs text-white flex items-center justify-center gap-2 transition-colors font-semibold shadow-sm"
               >
-                <ExternalLink className="w-3 h-3" />
-                STIX 2.1
+                <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                INSPECT RAW EVIDENCE (STIX / SENTINEL)
               </button>
-              <button
-                onClick={() => window.open(`/api/v1/export/csv?incidentId=${incidentId}`, '_blank')}
-                className="py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm font-mono text-[10px] text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Download className="w-3 h-3" />
-                CSV BUNDLE
-              </button>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => window.open(`/api/v1/export/stix?incidentId=${incidentId}`, '_blank')}
+                  className="py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm font-mono text-xs text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  STIX 2.1
+                </button>
+                <button
+                  onClick={() => window.open(`/api/v1/export/csv?incidentId=${incidentId}`, '_blank')}
+                  className="py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm font-mono text-xs text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <Download className="w-3 h-3" />
+                  CSV BUNDLE
+                </button>
+              </div>
             </div>
           </section>
         </aside>
       </div>
+
+      <RawEvidenceModal
+        isOpen={isRawModalOpen}
+        onClose={() => setIsRawModalOpen(false)}
+        incident={activeIncident}
+      />
     </motion.div>
   );
 };
