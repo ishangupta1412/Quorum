@@ -1,95 +1,224 @@
-﻿# Quorum
-**A Campaign-Correlation Detection Layer for VPN Authentication Telemetry**  
-*Microsoft Innovate 2026 Â· Redmond Labs*
+﻿<div align="center">
+
+<img src="docs/assets/screenshots/core-dashboard.jpg" alt="Quorum — SOC Detection Engine" width="100%" />
+
+<br /><br />
+
+<h1>Quorum</h1>
+
+<p><strong>Campaign-correlation detection for enterprise VPN authentication telemetry.</strong><br/>
+Stop Midnight Blizzard–style distributed password sprays that bypass traditional SIEM threshold rules.</p>
+
+[![CI](https://github.com/yourusername/quorum/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/quorum/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-55%2F55%20passing-10B981?style=flat-square)](./tests)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript)](./tsconfig.json)
+[![Next.js](https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=next.js)](https://nextjs.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-white?style=flat-square)](./LICENSE)
+[![Microsoft Innovate 2026](https://img.shields.io/badge/Microsoft%20Innovate-2026-0078D4?style=flat-square&logo=microsoft)](https://microsoft.com)
+
+</div>
 
 ---
 
-## ðŸŽ¯ The 45-Second Demo Contrast
+## The 45-Second Demo Contrast
 
-Microsoft had the logs when Midnight Blizzard breached their corporate email. The attack was a low-and-slow password spray engineered to look exactly like normal login noise across residential proxy IPs.
+| Detector | Alerts | Result |
+|---|---|---|
+| **Naive Volume Rule** (>=5 failures/IP) | **0** | Complete miss — spray stays below threshold |
+| **Loosened Threshold** (>=2 failures/IP) | **97** | SOC alert fatigue — floods analysts |
+| **Quorum Consensus Engine** | **1 Correlated Critical** | `Base 100 (F10_pivot) x 1.00 (GRAPH+PIVOT) + 15 -> 100 [CRITICAL]` |
 
-When evaluated against the exact same 3-day telemetry corpus:
-- **Naive Volume SIEM Rule:** **0 Alerts** *(Attack carefully stayed beneath 5 attempts/IP)*
-- **Loosened Threshold Rule:** **97 Alerts** *(Technically caught, but creates an alert flood that exhausts SOC analysts)*
-- **Quorum Consensus Engine:** **1 Correlated Critical Incident** *(Unified bipartite graph component with confirmed pivot)*
-
----
-
-## ðŸ›ï¸ Architecture Highlights
-
-- **Detection Plane:** Pure, deterministic TypeScript with zero ML/black-box dependencies.
-- **Bipartite Campaign Graph (Union-Find):** Correlates residential proxy IPs and sprayed user accounts with path compression and rank optimization.
-- **Post-Spray Pivot Detector:** Identifies the exact instant a sprayed account authenticates successfully (`SUCCESS`), elevating confidence to 100%.
-- **Deterministic Consensus Engine:** Multi-family mathematical consensus that outputs the human-readable severity equation:
-  ```text
-  Base 100 (F10_pivot) Ã— 1.00 (2 families: GRAPH, PIVOT) + 15 (auth success) â†’ floor 80 â†’ clipped 100 [CRITICAL]
-  ```
-- **Cryptographic Audit Ledger:** SHA-256 hash-chained ledger (`audit_ledger`) with real-time tamper-evident verification.
-- **Enterprise Interoperability:** Export direct to Microsoft Sentinel incident JSON or STIX 2.1 bundles.
+Quorum uses **bipartite graph Union-Find clustering** + **multi-family consensus arithmetic** to surface exactly one incident when Midnight Blizzard (NOBELIUM) operators distribute a password spray across 10 IPs and 47 accounts — staying under every per-source threshold.
 
 ---
 
-## ðŸš€ Quickstart
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><strong>Core SOC Console</strong></td>
+    <td align="center"><strong>Nexus Bipartite Graph</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/core-dashboard.jpg" alt="Core SOC Console" /></td>
+    <td><img src="docs/assets/screenshots/nexus-graph.jpg" alt="Nexus Attack Graph" /></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><strong>Forensics Audit Ledger</strong></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/assets/screenshots/forensics-ledger.jpg" alt="Forensics SHA-256 Audit Ledger" /></td>
+  </tr>
+</table>
+
+---
+
+## Architecture
+
+```
++-------------------------------------------------------------------+
+|                      QUORUM DETECTION PLANE                       |
+|                                                                   |
+|  Raw JSONL     F2 Normalizer    F5 Burst     F7 Bipartite        |
+|  Auth Logs --> AuthEvent ------> Detector --> Graph Cluster      |
+|                                               (Union-Find)        |
+|                    F10 Pivot Detector <-----------+              |
+|                         |                                         |
+|                    F13 Multi-Family                               |
+|                    Consensus Engine                               |
+|                         |                                         |
+|              Correlated Incident (score 0-115)                    |
+|                         |                                         |
+|          +--------------+------------------+                     |
+|     F21 SHA-256                  F25 Export Suite                 |
+|     Audit Ledger          STIX 2.1 . Sentinel . CSV              |
++-------------------------------------------------------------------+
+```
+
+### Detection Families
+
+| Family | Signal | Description |
+|---|---|---|
+| **F2** | Canonical Normalizer | Strips credentials, unwraps IPv4-mapped IPv6, UTC normalization |
+| **F5** | Burst Detector | Single-source high-volume brute-force (>50 failures/15min) |
+| **F7** | Spray Detector | Bipartite graph Union-Find: distributed multi-IP -> multi-account spray |
+| **F10** | Pivot Detector | Post-spray SUCCESS from campaign IP within 2h window (credential compromise) |
+| **F13** | Consensus Engine | Multi-family severity score: `Base x Multiplier + PivotBonus` |
+| **F15** | Contrast Comparators | Naive vs. Loosened vs. Quorum side-by-side benchmark |
+| **F21** | Audit Ledger | SHA-256 hash-chained immutable event log with tamper detection |
+| **F25** | Export Suite | STIX 2.1 bundles, Microsoft Sentinel ARM payloads, RFC 4180 CSV |
+
+---
+
+## Quick Start
 
 ### Prerequisites
-- Node.js >= 20 LTS
-- npm or pnpm
 
-### Installation & Reticle Verification
+- **Node.js** >= 20 (see [`.nvmrc`](.nvmrc))
+- **npm** >= 10
+
+### Installation
+
 ```bash
-# Install dependencies
+git clone https://github.com/yourusername/quorum.git
+cd quorum
 npm install
-
-# Run strict type checking (zero any policy)
-npm run typecheck
-
-# Run detection plane test suite
-npm test
-
-# Run complete Reticle verification loop (typecheck + tests)
-npm run reticle
 ```
 
-### Offline Demo Mode
-Quorum is designed with a 100% offline, air-gapped demo mode for stage presentations:
-```env
-NEXT_PUBLIC_DEMO_OFFLINE=true
-NEXT_PUBLIC_DEMO_CORPUS_PACK=B
+### Development
+
+```bash
+npm run dev          # Start dev server -> http://localhost:3000
+```
+
+### Verification Loop
+
+```bash
+npm run typecheck    # tsc --noEmit  zero type errors
+npm test             # 55 unit tests  all must pass
+npm run build        # Production build
+```
+
+All three must pass before any commit lands on `main`.
+
+---
+
+## Pages
+
+| Route | Description |
+|---|---|
+| `/` | Landing — project overview and live demo link |
+| `/core` | **SOC Console** — run detection on Pack A (benign) vs Pack B (attack) |
+| `/nexus` | **Bipartite Graph** — interactive D3 force-graph, click clusters to inspect pivot |
+| `/core/analysis` | **Evidence Stream** — per-event telemetry with severity timeline |
+| `/core/forensics` | **Audit Ledger** — SHA-256 hash chain with tamper simulation |
+
+---
+
+## API Routes
+
+| Endpoint | Description |
+|---|---|
+| `POST /api/v1/sentinel/webhook` | Receive Quorum incidents as Microsoft Sentinel ARM payloads (Zod-validated) |
+| `GET /api/v1/export/stix?incidentId=` | Download STIX 2.1 bundle for an incident |
+| `GET /api/v1/export/csv?incidentId=` | Download RFC 4180 CSV row for an incident |
+
+---
+
+## Security
+
+- **Zero raw credentials** — auth events are stripped of password-shaped fields before normalization
+- **Hash-chained audit ledger** — SHA-256 chain; tamper is detectable in O(n)
+- **Zod-validated ingestion** — all API inputs validated with strict schemas
+- **Server-only secrets** — no service keys ever sent to the browser
+- **Red-team tested** — 100k-event burst, 500-IP x 2000-account hostile cluster, timing attacks all covered
+
+See [`SECURITY.md`](SECURITY.md) for the vulnerability disclosure policy.
+
+---
+
+## Project Structure
+
+```
+quorum/
++-- src/
+|   +-- app/                    # Next.js App Router pages & API routes
+|   |   +-- core/               # SOC console, analysis, forensics
+|   |   +-- api/v1/             # Sentinel webhook, STIX & CSV exports
+|   +-- components/
+|   |   +-- ui/                 # Shared UI: CoreNav, ToastSystem, RawEvidenceModal
+|   |   +-- graph/              # Bipartite graph renderer (D3)
+|   |   +-- sentinel/           # SentinelDispatcher webhook client
+|   +-- detect/
+|   |   +-- engine.ts           # runDetectionPipeline  sealed Pack B
+|   +-- lib/
+|   |   +-- export/             # stix.ts . sentinel.ts . csv.ts
+|   |   +-- sound/              # audio-cues.ts  procedural Web Audio
+|   |   +-- audit/              # hash-chain ledger
+|   +-- data/
+|   |   +-- generator.ts        # generateSyntheticCorpus (Pack A & B)
+|   +-- types/
+|       +-- auth-event.ts       # AuthEvent, Incident, canonical types
++-- tests/                      # 55 unit tests (node:test runner)
++-- docs/
+|   +-- assets/screenshots/     # App screenshots for README
++-- .github/
+|   +-- workflows/ci.yml        # Lint + typecheck + test + build
+|   +-- ISSUE_TEMPLATE/         # Bug report & feature request
+|   +-- PULL_REQUEST_TEMPLATE.md
++-- CHANGELOG.md
++-- CONTRIBUTING.md
++-- CODE_OF_CONDUCT.md
++-- SECURITY.md
 ```
 
 ---
 
-## ðŸ“ Repository Structure
+## Contributing
 
-```text
-â”œâ”€â”€ docs/                     # Comprehensive architecture & design docs
-â”‚   â”œâ”€â”€ HACKATHON_FRAMEWORK.md# 45s stage script, judge FAQ defense, 5-minute pitch
-â”‚   â”œâ”€â”€ GRAPHIFY_CONTEXT.md   # Structural knowledge graph for multi-AI handoff
-â”‚   â”œâ”€â”€ AI_COLLABORATION_GUIDE.md # Freebuff, OpenCode, Manus, Claude, Ollama delegation
-â”‚   â”œâ”€â”€ PRE_LAUNCH_CHECKLIST.md # 15 technical guardrails + 20 "Don't get sued" checks
-â”‚   â”œâ”€â”€ ANTI_VIBECODE_AUDIT.md# 30 anti-vibecode rules + Floto roast defense
-â”‚   â”œâ”€â”€ PRD_REVIEW.md         # PRD v4 evaluation & improvement plan
-â”‚   â”œâ”€â”€ DESIGN_DOC.md         # The Core UI/UX (21st.dev, OriginKit, Skipper UI)
-â”‚   â”œâ”€â”€ TECH_STACK.md         # Tech stack research + Single-Task Roadmap
-â”‚   â”œâ”€â”€ SECURITY.md           # Zero-trust model & cryptographic audit chain
-â”‚   â”œâ”€â”€ DATABASE.md           # PostgreSQL schema & transactional RPCs
-â”‚   â”œâ”€â”€ CODE_STYLE.md         # Strict TypeScript guidelines
-â”‚   â””â”€â”€ API_GUIDE.md          # Next.js Route Handlers & Zod schemas
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ types/                # Canonical TypeScript definitions (AuthEvent, etc.)
-â”‚   â”œâ”€â”€ normalize/            # F1 Ingest & F2 Canonical Normalizer
-â”‚   â”œâ”€â”€ detect/               # Pure TypeScript Detection Plane (F5, F6, F7, F10, F13)
-â”‚   â”œâ”€â”€ data/                 # F4 Deterministic Synthetic Generator (Pack A & B)
-â”‚   â””â”€â”€ lib/
-â”‚       â”œâ”€â”€ ai/               # Multi-model AI router with circuit breaker & fallback
-â”‚       â”œâ”€â”€ crypto/           # F21 Cryptographic SHA-256 hash-chain ledger
-â”‚       â”œâ”€â”€ export/           # F25 Sentinel JSON & STIX 2.1 exporters
-â”‚       â””â”€â”€ rate-limiter.ts   # Server-side token-bucket rate limiter
-â””â”€â”€ tests/                    # Vitest unit test suite (100% green)
-```
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full guide.
+
+Short version:
+1. Fork -> `git clone` -> `npm install`
+2. Create a branch: `git checkout -b feat/your-feature`
+3. Run `npm run typecheck && npm test` — both must be green
+4. Commit using [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `test:`
+5. Open a PR — CI must pass before review
 
 ---
 
-## ðŸ›¡ï¸ License & Team
-Redmond Labs Â· Microsoft Innovate 2026.
+## Changelog
 
+See [`CHANGELOG.md`](CHANGELOG.md).
+
+---
+
+## License
+
+MIT (c) 2026 Ishan Gupta — see [`LICENSE`](LICENSE).
+
+---
+
+<div align="center">
+  <sub>Built for Microsoft Innovate 2026 . Redmond Labs</sub>
+</div>
