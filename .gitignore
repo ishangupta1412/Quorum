@@ -79,3 +79,4 @@ Thumbs.db
 # -- Graphify knowledge graph (auto-generated) --------------------
 graphify-out/
 
+.vercel
