@@ -21,8 +21,8 @@
     <img src="https://github.com/ishangupta1412/Quorum/actions/workflows/ci.yml/badge.svg" alt="CI" />
   </a>
   &nbsp;
-  <a href="https://quorum-rust-gamma.vercel.app">
-    <img src="https://img.shields.io/badge/Live%20Demo-quorum--rust--gamma.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white" alt="Live Demo" />
+  <a href="https://quorum-soc.vercel.app">
+    <img src="https://img.shields.io/badge/Live%20Demo-quorum--soc.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white" alt="Live Demo" />
   </a>
   &nbsp;
   <img src="https://img.shields.io/badge/tests-55%2F55%20passing-10B981?style=flat-square" alt="Tests" />
@@ -41,8 +41,8 @@
 </p>
 
 <p>
-  <a href="https://quorum-rust-gamma.vercel.app">
-    <strong>🔴 Live Demo → quorum-rust-gamma.vercel.app</strong>
+  <a href="https://quorum-soc.vercel.app">
+    <strong>🔴 Live Demo → quorum-soc.vercel.app</strong>
   </a>
 </p>
 
