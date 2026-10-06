@@ -80,3 +80,8 @@ Thumbs.db
 graphify-out/
 
 .vercel
+
+# Master defense guide (private to team)
+Quorum_Master_Guide_RedmondLabs.pdf
+Quorum_Master_Guide_RedmondLabs.html
+scripts/build-master-guide.js
