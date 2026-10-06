@@ -21,11 +21,15 @@
     <img src="https://github.com/ishangupta1412/Quorum/actions/workflows/ci.yml/badge.svg" alt="CI" />
   </a>
   &nbsp;
+  <a href="https://quorum-rust-gamma.vercel.app">
+    <img src="https://img.shields.io/badge/Live%20Demo-quorum--rust--gamma.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+  &nbsp;
   <img src="https://img.shields.io/badge/tests-55%2F55%20passing-10B981?style=flat-square" alt="Tests" />
   &nbsp;
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
   &nbsp;
-  <img src="https://img.shields.io/badge/Next.js-15-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
   &nbsp;
   <img src="https://img.shields.io/badge/STIX%202.1-Compliant-EF4444?style=flat-square" alt="STIX 2.1" />
   &nbsp;
@@ -33,6 +37,12 @@
   &nbsp;
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-white?style=flat-square" alt="MIT License" />
+  </a>
+</p>
+
+<p>
+  <a href="https://quorum-rust-gamma.vercel.app">
+    <strong>🔴 Live Demo → quorum-rust-gamma.vercel.app</strong>
   </a>
 </p>
 
