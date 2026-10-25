@@ -56,7 +56,7 @@
 
 ---
 
-## The 45-Second Demo Contrast
+## The Contrast
 
 > **The same 10-IP × 47-account Midnight Blizzard spray. Three detectors. One truth.**
 
