@@ -85,3 +85,6 @@ graphify-out/
 Quorum_Master_Guide_RedmondLabs.pdf
 Quorum_Master_Guide_RedmondLabs.html
 scripts/build-master-guide.js
+
+.freebuff/
+.claude/
