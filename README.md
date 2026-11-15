@@ -151,6 +151,28 @@ $$\text{Incident Severity} = \min\left(100, \, \text{Base} \times \prod_{i} M_i 
 
 ---
 
+## System Architecture
+
+Quorum implements a **multi-layer graph-theoretic detection plane** purpose-built for enterprise Active Directory environments. The system is composed of four vertically isolated layers — each with a single, well-defined contract — enabling independent scaling, testing, and auditability.
+
+### Ingestion Layer
+Raw authentication telemetry arrives as JSONL log streams (Entra ID / Azure AD Conditional Access events). The **F2 Canonical Normalizer** strips credential fields (passwords, tokens), unwraps IPv4-mapped IPv6 addresses, enforces UTC epoch timestamps, and emits a strict `AuthEvent` interface consumed by all downstream detectors.
+
+### Detection Layer
+Four purpose-built detectors run in sequence against the normalized event stream:
+- **F5 Burst Detector** — Volumetric single-source brute-force: flags any source IP exceeding 50 failures within a 15-minute sliding window.
+- **F7 Spray Detector** — Bipartite graph clustering via Union-Find (Disjoint-Set with path compression): correlates many-IP → many-account distributed password spray campaigns.
+- **F10 Pivot Detector** — Credential compromise confirmation: a `SUCCESS` event from a campaign IP within 2 hours of spray activity triggers an immediate escalation signal.
+- **F13 Consensus Engine** — Multi-family severity scoring: $\min(100,\;\text{Base} \times \prod M_i + \text{Bonus}_{\text{pivot}})$, fusing all detector outputs into a single normalized severity score (0–115).
+
+### Evidence Layer
+Every correlated incident is committed to an **F21 SHA-256 hash-chained audit ledger** — an immutable, tamper-evident event log verifiable in $O(N)$. No event can be retroactively altered without invalidating all successor hashes.
+
+### Export Layer
+The **F25 Export Suite** serializes verified incidents into three interoperable formats: OASIS **STIX 2.1** JSON bundles (for TAXII feeds), Microsoft **Sentinel ARM** template payloads (for direct SIEM deployment), and **RFC 4180 CSV** (for DFIR analyst workflows).
+
+---
+
 ## Detection Architecture
 
 ```
