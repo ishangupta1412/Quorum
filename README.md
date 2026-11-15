@@ -153,23 +153,32 @@ $$\text{Incident Severity} = \min\left(100, \, \text{Base} \times \prod_{i} M_i 
 
 ## System Architecture
 
-Quorum implements a **multi-layer graph-theoretic detection plane** purpose-built for enterprise Active Directory environments. The system is composed of four vertically isolated layers — each with a single, well-defined contract — enabling independent scaling, testing, and auditability.
+```mermaid
+flowchart TD
+    subgraph Ingestion ["Ingestion Layer — F2 Canonical Normalizer"]
+        A["Raw JSONL Auth Logs\n(Entra ID / Azure AD)"] --> B["F2 Normalizer\n(Credential Stripping · IPv6 Unwrap · UTC Epoch)"]
+        B --> C[("AuthEvent Stream\n(Strict TypeScript Interface)")]
+    end
 
-### Ingestion Layer
-Raw authentication telemetry arrives as JSONL log streams (Entra ID / Azure AD Conditional Access events). The **F2 Canonical Normalizer** strips credential fields (passwords, tokens), unwraps IPv4-mapped IPv6 addresses, enforces UTC epoch timestamps, and emits a strict `AuthEvent` interface consumed by all downstream detectors.
+    subgraph Detection ["Detection Layer — Multi-Family Engine"]
+        C --> D["F5 Burst Detector\n(> 50 failures / 15-min window)"]
+        C --> E["F7 Spray Detector\n(Bipartite Union-Find Graph Clustering)"]
+        E --> F["F10 Pivot Detector\n(SUCCESS from campaign IP within 2 hrs)"]
+        D --> G["F13 Consensus Engine\n(Severity Score 0–115)"]
+        F --> G
+    end
 
-### Detection Layer
-Four purpose-built detectors run in sequence against the normalized event stream:
-- **F5 Burst Detector** — Volumetric single-source brute-force: flags any source IP exceeding 50 failures within a 15-minute sliding window.
-- **F7 Spray Detector** — Bipartite graph clustering via Union-Find (Disjoint-Set with path compression): correlates many-IP → many-account distributed password spray campaigns.
-- **F10 Pivot Detector** — Credential compromise confirmation: a `SUCCESS` event from a campaign IP within 2 hours of spray activity triggers an immediate escalation signal.
-- **F13 Consensus Engine** — Multi-family severity scoring: $\min(100,\;\text{Base} \times \prod M_i + \text{Bonus}_{\text{pivot}})$, fusing all detector outputs into a single normalized severity score (0–115).
+    subgraph Evidence ["Evidence Layer — Cryptographic Integrity"]
+        G --> H["F21 SHA-256 Audit Ledger\n(Immutable Hash-Chained Event Log)"]
+        G --> I["F15 Contrast Benchmark\n(Naive vs. Loosened vs. Quorum)"]
+    end
 
-### Evidence Layer
-Every correlated incident is committed to an **F21 SHA-256 hash-chained audit ledger** — an immutable, tamper-evident event log verifiable in $O(N)$. No event can be retroactively altered without invalidating all successor hashes.
-
-### Export Layer
-The **F25 Export Suite** serializes verified incidents into three interoperable formats: OASIS **STIX 2.1** JSON bundles (for TAXII feeds), Microsoft **Sentinel ARM** template payloads (for direct SIEM deployment), and **RFC 4180 CSV** (for DFIR analyst workflows).
+    subgraph Export ["Export Layer — F25 Interop Suite"]
+        H --> J["STIX 2.1 JSON Bundle\n(TAXII-Ready Threat Intel)"]
+        H --> K["Microsoft Sentinel ARM\n(Direct SIEM Deployment)"]
+        H --> L["RFC 4180 CSV\n(DFIR Analyst Export)"]
+    end
+```
 
 ---
 
