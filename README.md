@@ -331,6 +331,18 @@ quorum/
 
 ---
 
+## Star History
+
+<div align="center">
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ishangupta1412/Quorum&type=Date)](https://star-history.com/#ishangupta1412/Quorum&Date)
+
+<sub>Live real-time telemetry chart tracked automatically via GitHub API</sub>
+
+</div>
+
+---
+
 ## License & Attribution
 
 - **Competition**: Microsoft Innovate 2026 (Redmond Labs)
