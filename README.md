@@ -334,7 +334,7 @@ quorum/
 ## License & Attribution
 
 - **Competition**: Microsoft Innovate 2026 (Redmond Labs)
-- **Author & Architect**: [Ishan Gupta](https://github.com/ishangupta1412) ([LinkedIn](https://www.linkedin.com/in/ishan-gupta-976192419) • [X](https://x.com/itsishan14))
+- **Author & Architect**: [Ishan Gupta](https://github.com/ishangupta1412) ([LinkedIn](https://www.linkedin.com/in/ishan14md) • [X](https://x.com/itsishan14))
 - **License**: [MIT License](./LICENSE)
 
 <br/>
